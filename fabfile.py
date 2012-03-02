@@ -1,26 +1,54 @@
 from fabric.api import *
-import os
-import sys
-import time
+from fabric.colors import green, red, yellow
+import os, sys, time
+
+# TODO: define stage via cmdline, or rcfile
 
 env.user = 'autodeploy'
 env.shell = '/bin/bash -c'
+env.web_root = '/var/www'
 env.release_time = time.strftime('%Y.%m.%d-%H.%M')
 
+env.install_tasks = [
+  'build_release',
+  'upload_release',
+  'extract_release',
+]
+
 def test(tag):
-  #env.hosts = env.web_hosts
-  #execute('build_release', env.site, tag)
-  #execute('upload_release', env.site, tag)
+  execute('build_release', env.site, tag)
+  execute('upload_release', env.site, tag)
   execute('extract_release', env.site, tag)
 
-def load_config(config_name, stage='dev'):
-  env.stage = stage
+def deploy(tag):
+  for task in env.install_tasks:
+    execute(task, env.site, tag)
+
+def load_config(config_name):
   directory = os.getcwd()
   sys.path.append(directory)
+  #env.config = __import__(config_name)
+  #__import__(config_name, globals(), locals(), [], -1)
   __import__(config_name)
 
-def tag_release(site, tag, commit):
-  pass
+def tag_release(site, tag, commit, message=''):
+  print "===> Building the release..."
+  scm_build_dir = '/tmp/drupal-site-%s' % site
+  tag = 'site-%s-' % (env.release_time)
+
+  # Ensure code directory exists
+  with settings(warn_only=True):
+    if local('test -d %s' % scm_build_dir).failed:
+      local('git clone %s %s' % (env.scm_uri, scm_build_dir))
+
+  with lcd(scm_build_dir):
+    # TODO: put git status check here
+    if (local("git pull", capture=True)).succeeded:
+      if (message == ''):
+        local('git tag %s %s' % (tag, commit))
+      else:
+        local('git tag -m "%s" %s %s' % (message, tag, commit))
+  return tag
 
 # TODO: needs appropriate gitconfig, etc
 # TODO: ensure files directory and settings.php are excluded by git archive
@@ -55,6 +83,8 @@ def extract_release(site, tag):
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
+    if local('test -d %s' % scm_build_dir).failed:
+      abort(red("Release directory already exists"))
   with cd('/var/www/drupal/%s/releases' % site):
     run('mkdir -p /var/www/drupal/%s/releases/%s' % (site, tag))
     run('tar -zxf /tmp/%s -C /var/www/drupal/%s/releases/%s' % (release_archive, site, tag))
