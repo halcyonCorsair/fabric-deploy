@@ -2,7 +2,7 @@ from fabric.api import env, task
 from fabric.utils import abort
 
 env.site    = 'example'
-env.scm_uri = 'git+ssh://git.catalyst.net.nz/git/private/drupal/example.git'
+env.scm_uri = 'git+ssh://git.hosting.com/drupal/example.git'
 
 if (env.stage == 'dev'):
   env.install_tasks = [
