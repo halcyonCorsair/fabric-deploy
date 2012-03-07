@@ -20,16 +20,3 @@ else:
   abort('stage not setup in site recipe')
 
 '''
-def dev():
-  # Override the defaults
-  env.install_tasks = [
-    'build_release',
-    'upload_release',
-    'extract_release',
-  ]
-  env.hosts = [
-    'user@33.33.33.21'
-  ]
-  env.web_root = '/sites'
-'''
-
