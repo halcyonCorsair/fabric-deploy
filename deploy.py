@@ -30,7 +30,7 @@ def load_config():
   directory = os.getcwd()
   sys.path.append(directory)
   import siteconfig
-  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
+  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, env.site)
 
 def tag_release(site, tag, commit, message=''):
   print "===> Building the release..."
