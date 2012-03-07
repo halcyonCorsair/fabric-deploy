@@ -66,28 +66,35 @@ def build_release(site, tag):
     # put git status check here
     if (local("git pull", capture=True)).succeeded:
       release_tree = local('git show -s --format=%%h %s' % tag, True)
-      local('git archive --remote="%s" --format tar %s | gzip > /tmp/%s' % (env.scm_uri, release_tree, release_archive))
+      #local('git archive --remote="%s" --format tar %s | gzip > /tmp/%s' % (env.scm_uri, release_tree, release_archive))
+      #local('git archive --remote="%s" --format tar %s | gzip > ~/tmp/%s' % (env.scm_uri, release_tree, release_archive))
+      local('git archive --format tar %s | gzip > ~/tmp/%s' % (release_tree, release_archive))
 
 def upload_release(site, tag):
   print "===> Installing the site for the first time..."
   release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
   with settings(warn_only=True):
-    if run("test -f /tmp/%s" % release_archive).failed:
-      put('/tmp/%s' % release_archive, '/tmp/')
+    #if run("test -f /tmp/%s" % release_archive).failed:
+    if run("test -f ~/tmp/%s" % release_archive).failed:
+      #put('/tmp/%s' % release_archive, '/tmp/')
+      put('~/tmp/%s' % release_archive, '/tmp/')
     else:
       abort(red("Release archive doesn't exist, please run build_release again"))
 
 def extract_release(site, tag):
   print "===> Extracting the release..."
+  env.site = site
+  env.tag = tag
   release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
-    if local('test -d %s' % env.scm_build_dir).failed:
+    if run('test -d /var/www/%(apptype)s/%(site)s/releases/%(tag)s' % env).succeeded:
       abort(red("Release directory already exists"))
-  with cd('/var/www/%s/%s/releases' % (env.apptype, site)):
-    run('mkdir -p /var/www/%s/%s/releases/%s' % (env.apptype, site, tag))
-    run('tar -zxf /tmp/%s -C /var/www/%s/%s/releases/%s' % (release_archive, env.apptype, site, tag))
+  if run('test -d /var/www/%(apptype)s/%(site)s/releases' % env).succeeded:
+    with cd('/var/www/%s/%s/releases' % (env.apptype, site)):
+      run('mkdir -p /var/www/%s/%s/releases/%s' % (env.apptype, site, tag))
+      run('tar -zxf /tmp/%s -C /var/www/%s/%s/releases/%s' % (release_archive, env.apptype, site, tag))
 
 def create_release_files_symlink(site, tag):
   run('ln -nfs /var/lib/sitedata/%s/%s/files /var/www/%s/%s/releases/%s/sites/default/files' % (env.apptype, site, env.apptype, site, tag))
