@@ -3,6 +3,7 @@ from fabric.utils import abort
 
 env.site    = 'example'
 env.scm_uri = 'git+ssh://git.hosting.com/drupal/example.git'
+env.apptype = 'drupal'
 
 if (env.stage == 'dev'):
   env.install_tasks = [
