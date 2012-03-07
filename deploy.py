@@ -30,18 +30,18 @@ def load_config(config_name):
   #env.config = __import__(config_name)
   #__import__(config_name, globals(), locals(), [], -1)
   __import__(config_name)
+  env.scm_build_dir = '/tmp/drupal-site-%s' % (env.apptype, site)
 
 def tag_release(site, tag, commit, message=''):
   print "===> Building the release..."
-  scm_build_dir = '/tmp/drupal-site-%s' % site
   tag = 'site-%s-' % (env.release_time)
 
   # Ensure code directory exists
   with settings(warn_only=True):
-    if local('test -d %s' % scm_build_dir).failed:
-      local('git clone %s %s' % (env.scm_uri, scm_build_dir))
+    if local('test -d %s' % env.scm_build_dir).failed:
+      local('git clone %s %s' % (env.scm_uri, env.scm_build_dir))
 
-  with lcd(scm_build_dir):
+  with lcd(env.scm_build_dir):
     # TODO: put git status check here
     if (local("git pull", capture=True)).succeeded:
       if (message == ''):
@@ -54,15 +54,15 @@ def tag_release(site, tag, commit, message=''):
 # TODO: ensure files directory and settings.php are excluded by git archive
 def build_release(site, tag):
   print "===> Building the release..."
-  release_archive = 'drupal-site-%s.tar.gz' % tag
-  scm_build_dir = '/tmp/drupal-site-%s' % site
+  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
+  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
 
   # Ensure code directory exists
   with settings(warn_only=True):
-    if local('test -d %s' % scm_build_dir).failed:
-      local('git clone %s %s' % (env.scm_uri, scm_build_dir))
+    if local('test -d %s' % env.scm_build_dir).failed:
+      local('git clone %s %s' % (env.scm_uri, env.scm_build_dir))
 
-  with lcd(scm_build_dir):
+  with lcd(env.scm_build_dir):
     # put git status check here
     if (local("git pull", capture=True)).succeeded:
       release_tree = local('git show -s --format=%%h %s' % tag, True)
@@ -83,7 +83,7 @@ def extract_release(site, tag):
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
-    if local('test -d %s' % scm_build_dir).failed:
+    if local('test -d %s' % env.scm_build_dir).failed:
       abort(red("Release directory already exists"))
   with cd('/var/www/drupal/%s/releases' % site):
     run('mkdir -p /var/www/drupal/%s/releases/%s' % (site, tag))
