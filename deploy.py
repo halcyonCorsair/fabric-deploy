@@ -26,10 +26,7 @@ def deploy(tag):
 def load_config(config_name):
   directory = os.getcwd()
   sys.path.append(directory)
-  #env.config = __import__(config_name)
-  #__import__(config_name, globals(), locals(), [], -1)
-  __import__(config_name)
-  env.scm_build_dir = '/tmp/drupal-site-%s' % (env.apptype, site)
+  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
 
 def tag_release(site, tag, commit, message=''):
   print "===> Building the release..."
@@ -69,7 +66,7 @@ def build_release(site, tag):
 
 def upload_release(site, tag):
   print "===> Installing the site for the first time..."
-  release_archive = 'drupal-site-%s.tar.gz' % tag
+  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       put('/tmp/%s' % release_archive, '/tmp/')
@@ -78,28 +75,28 @@ def upload_release(site, tag):
 
 def extract_release(site, tag):
   print "===> Extracting the release..."
-  release_archive = 'drupal-site-%s.tar.gz' % tag
+  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
     if local('test -d %s' % env.scm_build_dir).failed:
       abort(red("Release directory already exists"))
-  with cd('/var/www/drupal/%s/releases' % site):
-    run('mkdir -p /var/www/drupal/%s/releases/%s' % (site, tag))
-    run('tar -zxf /tmp/%s -C /var/www/drupal/%s/releases/%s' % (release_archive, site, tag))
+  with cd('/var/www/%s/%s/releases' % (env.apptype, site)):
+    run('mkdir -p /var/www/%s/%s/releases/%s' % (env.apptype, site, tag))
+    run('tar -zxf /tmp/%s -C /var/www/%s/%s/releases/%s' % (release_archive, env.apptype, site, tag))
 
 def create_release_files_symlink(site, tag):
-  run('ln -nfs /var/lib/sitedata/drupal/%s/files /var/www/drupal/%s/releases/%s/sites/default/files' % (site, site, tag))
+  run('ln -nfs /var/lib/sitedata/%s/%s/files /var/www/%s/%s/releases/%s/sites/default/files' % (env.apptype, site, env.apptype, site, tag))
 
 def create_release_settings_symlink(site, tag):
-  run('ln -nfs /var/www/drupal/%s/settings.php /var/www/drupal/%s/releases/%s/sites/default/settings.php' % (site, site, tag))
+  run('ln -nfs /var/www/%s/%s/settings.php /var/www/%s/%s/releases/%s/sites/default/settings.php' % (env.apptype, site, env.apptype, site, tag))
 
 def symlinks_current_release(site, tag):
   print "===> Symlinking current release..."
-  site_symlink = '/var/www/drupal/%s/current' % site
-  previous_site_symlink = '/var/www/drupal/%s/previous' % site
+  site_symlink = '/var/www/%s/%s/current' % (env.apptype, site)
+  previous_site_symlink = '/var/www/%s/%s/previous' % (env.apptype, site)
   new_previous = run('readlink %s' % site_symlink)
-  new_current = '/var/www/drupal/%s/releases/%s' % (site, tag)
+  new_current = '/var/www/%s/%s/releases/%s' % (env.apptype, site, tag)
 
   if (new_previous != new_current):
     if run("test -d %s" % new_current).succeeded:
@@ -109,25 +106,25 @@ def symlinks_current_release(site, tag):
 
 def backup_database(site):
   print "===> Quick and dirty database backup..."
-  run('drush -r /var/www/drupal/%s/current sql-dump --result-file=~/%s-`date +%Y.%m.%d-%H.%M`.sql --gzip' % (site, site))
+  run('drush -r /var/www/%s/%s/current sql-dump --result-file=~/%s-`date +%Y.%m.%d-%H.%M`.sql --gzip' % (env.apptype, site, site))
 
 def site_offline(site):
   print "===> Set site offline..."
-  run("drush -r /var/www/drupal/%s/current -y vset maintenance_mode 1" % site)
+  run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 1" % (env.apptype, site))
 
 def site_online(site):
   print "===> Set site online..."
-  run("drush -r /var/www/drupal/%s/current -y vset maintenance_mode 0" % site)
+  run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 0" % (env.apptype, site))
 
 def drush_revert_features(site):
   print "===> Reverting site features..."
-  run("drush -r /var/www/drupal/%s/current fra -y" % site)
+  run("drush -r /var/www/%s/%s/current fra -y" % (env.apptype, site))
 
 def drush_update_database(site):
   print "===> Running database updates..."
-  run("drush -r /var/www/drupal/%s/current updb" % site)
+  run("drush -r /var/www/%s/%s/current updb" % (env.apptype, site))
 
 def drush_clear_cache_all(site):
   print "===> Running drush cc all..."
-  run("drush -r /var/www/drupal/%s/current cc all" % site)
+  run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
