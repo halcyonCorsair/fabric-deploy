@@ -102,18 +102,21 @@ def create_release_files_symlink(site, tag):
 def create_release_settings_symlink(site, tag):
   run('ln -nfs /var/www/%s/%s/settings.php /var/www/%s/%s/releases/%s/sites/default/settings.php' % (env.apptype, site, env.apptype, site, tag))
 
-def symlinks_current_release(site, tag):
+def symlink_current_release(site, tag):
   print "===> Symlinking current release..."
   site_symlink = '/var/www/%s/%s/current' % (env.apptype, site)
   previous_site_symlink = '/var/www/%s/%s/previous' % (env.apptype, site)
-  new_previous = run('readlink %s' % site_symlink)
+  new_previous = ''
+  with settings(warn_only=True):
+    new_previous = run('readlink %s' % site_symlink)
   new_current = '/var/www/%s/%s/releases/%s' % (env.apptype, site, tag)
 
   if (new_previous != new_current):
     if run("test -d %s" % new_current).succeeded:
       run('ln -fns %s %s' % (new_current, site_symlink))
-    if run("test -d %s" % new_previous).succeeded:
-      run('ln -fns %s %s' % (new_previous, previous_site_symlink))
+    with settings(warn_only=True):
+      if run("test -d %s" % new_previous).succeeded:
+        run('ln -fns %s %s' % (new_previous, previous_site_symlink))
 
 def backup_database(site):
   print "===> Quick and dirty database backup..."
