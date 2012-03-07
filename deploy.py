@@ -23,9 +23,13 @@ def deploy(tag):
   for task in env.install_tasks:
     execute(task, env.site, tag)
 
-def load_config(config_name):
+def load_config():
+  """Load site config.
+  Assume config file is called siteconfig.py and resides in the current directory.
+  """
   directory = os.getcwd()
   sys.path.append(directory)
+  import siteconfig
   env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
 
 def tag_release(site, tag, commit, message=''):
