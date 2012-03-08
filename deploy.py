@@ -67,10 +67,8 @@ def upload_release(site, tag):
   print green("===> Uploading the release archive...")
   release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
   with settings(warn_only=True):
-    #if run("test -f /tmp/%s" % release_archive).failed:
-    if run("test -f ~/tmp/%s" % release_archive).failed:
-      #put('/tmp/%s' % release_archive, '/tmp/')
-      put('~/tmp/%s' % release_archive, '/tmp/')
+    if run("test -f /tmp/%s" % release_archive).failed:
+      put('/tmp/%s' % release_archive, '/tmp/')
     else:
       abort(red("Release archive doesn't exist, please run build_release again"))
 
