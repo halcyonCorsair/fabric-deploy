@@ -12,6 +12,9 @@ TODO:
 * site online/offline for d6
 * Drush defaults: assume human, or automated? eg. prompt, or not?
 * Omit cache tables from database backup
+* Import more selectively
+* Logging
+* Look at yyuus fabric_deploy (yyuu.fabric_deploy)
 
 Recipe future possibilities:
 
