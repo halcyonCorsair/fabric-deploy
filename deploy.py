@@ -159,3 +159,10 @@ def drush_cache_clear_all(site):
   print green("===> Running drush cc all...")
   run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
+def mkdir(dir, use_sudo=False):
+    # Create a directory if it doesn't exist
+    if (use_sudo):
+      run('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
+    else:
+      sudo('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
+
