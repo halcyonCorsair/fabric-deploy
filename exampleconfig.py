@@ -2,7 +2,7 @@ from fabric.api import env, task
 from fabric.utils import abort
 
 env.site    = 'example'
-env.scm_uri = 'git+ssh://git.hosting.com/drupal/example.git'
+env.repository = 'git+ssh://git.hosting.com/drupal/example.git'
 env.apptype = 'drupal'
 
 """Assume stage set via rcfile, eg:

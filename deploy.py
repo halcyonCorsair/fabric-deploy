@@ -36,7 +36,7 @@ def tag_release(site, tag, commit, message=''):
   # Ensure code directory exists
   with settings(warn_only=True):
     if local('test -d %s' % env.scm_build_dir).failed:
-      local('git clone %s %s' % (env.scm_uri, env.scm_build_dir))
+      local('git clone %s %s' % (env.repository, env.scm_build_dir))
 
   with lcd(env.scm_build_dir):
     # TODO: put git status check here
@@ -55,7 +55,7 @@ def build_release(site, tag):
   # Ensure code directory exists
   with settings(warn_only=True):
     if local('test -d %s' % env.scm_build_dir).failed:
-      local('git clone %s %s' % (env.scm_uri, env.scm_build_dir))
+      local('git clone %s %s' % (env.repository, env.scm_build_dir))
 
   with lcd(env.scm_build_dir):
     # put git status check here
