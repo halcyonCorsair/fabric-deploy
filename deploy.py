@@ -49,7 +49,7 @@ def tag_release(site, tag, commit, message=''):
 
 def build_release(site, tag):
   print green("===> Building the release...")
-  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
+  release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
   env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
 
   # Ensure code directory exists
@@ -65,7 +65,7 @@ def build_release(site, tag):
 
 def upload_release(site, tag):
   print green("===> Uploading the release archive...")
-  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
+  release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       put('/tmp/%s' % release_archive, '/tmp/')
@@ -76,7 +76,7 @@ def extract_release(site, tag):
   print green("===> Extracting the release...")
   env.site = site
   env.tag = tag
-  release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
+  release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
   with settings(warn_only=True):
     if run("test -f /tmp/%s" % release_archive).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
