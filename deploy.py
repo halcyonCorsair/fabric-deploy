@@ -116,13 +116,19 @@ def backup_database(site):
   print green("===> Quick and dirty database backup...")
   run('drush -r /var/www/%s/%s/current sql-dump --result-file=~/%s-`date +%Y.%m.%d-%H.%M`.sql --gzip' % (env.apptype, site, site))
 
-def site_offline(site):
+def site_offline(site, version=7):
   print green("===> Set site offline...")
-  run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 1" % (env.apptype, site))
+  if (version == 7):
+    run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 1" % (env.apptype, site))
+  elif (version == 6):
+    run("drush -r /var/www/%s/%s/current -y vset site_offline 1" % (env.apptype, site))
 
-def site_online(site):
+def site_online(site, version=7):
   print green("===> Set site online...")
-  run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 0" % (env.apptype, site))
+  if (version == 7):
+    run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 0" % (env.apptype, site))
+  elif (version == 6):
+    run("drush -r /var/www/%s/%s/current -y vset site_offline 1" % (env.apptype, site))
 
 def drush_revert_features(site):
   print green("===> Reverting site features...")
