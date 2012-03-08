@@ -130,9 +130,16 @@ def site_online(site, version=7):
   elif (version == 6):
     run("drush -r /var/www/%s/%s/current -y vset site_offline 1" % (env.apptype, site))
 
-def drush_revert_features(site):
+def drush_revert_features(site, prompt=True):
   print green("===> Reverting site features...")
-  run("drush -r /var/www/%s/%s/current fra -y" % (env.apptype, site))
+  if (prompt):
+    """
+    Show list of changed features, and then have drush ask whether to continue.
+    """
+    run("drush -r /var/www/%s/%s/current features" % (env.apptype, site))
+    run("drush -r /var/www/%s/%s/current fra" % (env.apptype, site))
+  else:
+    run("drush -r /var/www/%s/%s/current -y fra" % (env.apptype, site))
 
 def drush_update_database(site):
   print green("===> Running database updates...")
