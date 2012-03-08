@@ -148,7 +148,7 @@ def drush_update_database(site, prompt=True):
   else:
     run("drush -r /var/www/%s/%s/current -y updb" % (env.apptype, site))
 
-def drush_clear_cache_all(site):
+def drush_cache_clear_all(site):
   print green("===> Running drush cc all...")
   run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
