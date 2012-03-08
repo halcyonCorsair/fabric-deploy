@@ -102,6 +102,9 @@ def symlink_current_release(site, tag):
     new_previous = run('readlink %s' % site_symlink)
   new_current = '/var/www/%s/%s/releases/%s' % (env.apptype, site, tag)
 
+  """
+  If targets are different, set target of current -> previous, and new release -> current
+  """
   if (new_previous != new_current):
     if run("test -d %s" % new_current).succeeded:
       run('ln -fns %s %s' % (new_current, site_symlink))
