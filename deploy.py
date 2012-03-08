@@ -63,7 +63,7 @@ def build_release(site, tag):
     # put git status check here
     if (local("git pull", capture=True)).succeeded:
       release_tree = local('git show -s --format=%%h %s' % tag, True)
-      local('git archive --format tar %s | gzip > ~/tmp/%s' % (release_tree, release_archive))
+      local('git archive --format tar %s | gzip > /tmp/%s' % (release_tree, release_archive))
 
 def upload_release(site, tag):
   print green("===> Uploading the release archive...")
