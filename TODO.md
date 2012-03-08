@@ -1,6 +1,7 @@
 TODO:
 
 * Add notes, re: pre-requisites (eg. deployment directory structure)
+** Assumptions, eg. /var/lib/sitedata/<sitename>, /var/www/<appname>/releases
 * Fix up .md files
 * After loading, print config?
 * Mention git attributes for git archive
