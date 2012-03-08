@@ -15,6 +15,7 @@ env.install_tasks = [
 ]
 
 def deploy(tag):
+  load_config()
   for task in env.install_tasks:
     execute(task, env.site, tag)
 
