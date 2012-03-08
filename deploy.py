@@ -2,7 +2,6 @@ from fabric.api import *
 from fabric.colors import green, red, yellow
 import os, sys, time
 
-
 env.user = 'autodeploy'
 env.shell = '/bin/bash -c'
 env.web_root = '/var/www'
