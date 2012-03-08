@@ -47,8 +47,6 @@ def tag_release(site, tag, commit, message=''):
         local('git tag -m "%s" %s %s' % (message, tag, commit))
   return tag
 
-# TODO: needs appropriate gitconfig, etc
-# TODO: ensure files directory and settings.php are excluded by git archive
 def build_release(site, tag):
   print green("===> Building the release...")
   release_archive = '%s-site-%s.tar.gz' % (env.apptype, tag)
