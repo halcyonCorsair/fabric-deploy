@@ -21,7 +21,7 @@ Example usage:
 ```
 
   Deploy to an arbitrary server (as long as env.hosts isn't getting overridden):
-  
+
 ```bash
   fab -f /path/to/deploy.py -c devrc -H user@hostname.com deploy:'mytag-20120307-1'
 ```
