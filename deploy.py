@@ -14,11 +14,6 @@ env.install_tasks = [
   'extract_release',
 ]
 
-def test(tag):
-  execute('build_release', env.site, tag)
-  execute('upload_release', env.site, tag)
-  execute('extract_release', env.site, tag)
-
 def deploy(tag):
   for task in env.install_tasks:
     execute(task, env.site, tag)
