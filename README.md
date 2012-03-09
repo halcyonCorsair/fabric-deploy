@@ -1,9 +1,3 @@
-Quick start:
-
-* Copy exampleconfig.py to siteconfig.py in a handy location.
-* Update siteconfig.py as required.
-* Update copy examplerc to say 'devrc' and update as required
-
 Conventions / Assumptions:
 
 * user/group deploy exist and have correct ssh/key setup
@@ -26,6 +20,11 @@ Install fabric:
 $ sudo pip install fabric
 ```
 
+Copy exampleconfig.py to siteconfig.py in a handy location.
+
+Update siteconfig.py as required.
+
+Copy examplerc to '<environment>rc' and update as required.
 
 Alias fabric call, add to your ~/.bashrc:
 
