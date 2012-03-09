@@ -4,6 +4,14 @@ Quick start:
 * Update siteconfig.py as required.
 * Update copy examplerc to say 'devrc' and update as required
 
+Conventions / Assumptions:
+
+* user/group deploy exist and have correct ssh/key setup
+* /var/lib/sitedata/<apptype> exists and is writable by deploy
+* /var/lib/sitedata/<apptype>/<sitename> exists and is writable by deploy
+* /var/www/<apptype> exists and is writable by deploy
+* /var/www/<apptype>/<sitename> exists and is writable by deploy
+
 Getting started:
 
 See the fabric documentation at: http://docs.fabfile.org
