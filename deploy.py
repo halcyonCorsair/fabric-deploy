@@ -179,6 +179,9 @@ def rollback_symlink(site, tag):
 @task
 @runs_once
 def drush_backup_database(site, tag):
+  """
+  Backup database to deploy user's home directory with drush
+  """
   print green("===> Quick and dirty database backup...")
   backup_time = time.strftime('%Y.%m.%d-%H.%M')
   run('drush -r /var/www/%s/%s/current sql-dump --result-file=~/%s_%s_%s.sql --gzip' % (env.apptype, site, site, env.stage, backup_time))
@@ -226,6 +229,9 @@ def drush_feature_revert(site, tag, prompt=True):
 @task
 @runs_once
 def drush_update_database(site, tag, prompt=True):
+  """
+  Run drupal database updates
+  """
   print green("===> Running database updates...")
   if (prompt == True):
     run("drush -r /var/www/%s/%s/current updb" % (env.apptype, site))
@@ -239,8 +245,10 @@ def drush_cache_clear_all(site, tag):
   run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
 def mkdir(dir, use_sudo=False):
+    """
+    Helper function to create directories
+    """
     command = 'if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir)
-    # Create a directory if it doesn't exist
     if (use_sudo == True):
       run(command)
     else:
