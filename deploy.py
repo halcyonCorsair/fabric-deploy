@@ -154,8 +154,8 @@ def rollback_symlink(site, tag):
   site_symlink = '/var/www/%s/%s/current' % (env.apptype, site)
   previous_site_symlink = '/var/www/%s/%s/previous' % (env.apptype, site)
   previous = run('readlink %s' % previous_site_symlink)
-  run('ln -fns %s %s' % (previous, site_symlink)
-  run('rm %s' % previous_site_symlink
+  run('ln -fns %s %s' % previous, site_symlink)
+  run("rm %s" % previous_site_symlink)
 
 @task
 @runs_once
