@@ -1,5 +1,9 @@
 TODO:
 
+* Test parallel execution
+* Write puppet modules
+
+* healthchecks, load balancers?
 * Git checkout bare?
 * Add more comments/documentation
 * Put release_archive in env
@@ -18,7 +22,9 @@ TODO:
 * Logging
 * Look at yyuus fabric_deploy (yyuu.fabric_deploy)
 * Add more verbose output, eg. zxvf vs zxf
+
 * Parallel execution - capture output, display once where required, eg. puppet runs
+* Kick other services?
 
 Recipe future possibilities:
 
