@@ -6,6 +6,8 @@ env.user = 'autodeploy'
 env.shell = '/bin/bash -c'
 env.web_root = '/var/www'
 env.release_time = time.strftime('%Y.%m.%d-%H.%M')
+env.local_tmp = '/tmp'
+env.remote_tmp = '/tmp'
 
 env.install_tasks = [
   'build_release',
@@ -26,7 +28,7 @@ def load_config():
   directory = os.getcwd()
   sys.path.append(directory)
   import siteconfig
-  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, env.site)
+  env.scm_build_dir = '%s/%s-site-%s' % (env.local_tmp, env.apptype, env.site)
 
 def tag_release(site, tag, commit, message=''):
   print green("===> Building the release...")
@@ -46,10 +48,11 @@ def tag_release(site, tag, commit, message=''):
         local('git tag -m "%s" %s %s' % (message, tag, commit))
   return tag
 
+@task
 def build_release(site, tag):
   print green("===> Building the release...")
   release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
-  env.scm_build_dir = '/tmp/%s-site-%s' % (env.apptype, site)
+  env.scm_build_dir = '%s/%s-site-%s' % (env.local_tmp, env.apptype, site)
 
   # Ensure code directory exists
   with settings(warn_only=True):
@@ -59,17 +62,15 @@ def build_release(site, tag):
   with lcd(env.scm_build_dir):
     # put git status check here
     if (local("git pull", capture=True)).succeeded:
-      release_tree = local('git show -s --format=%%h %s' % tag, True)
-      local('git archive --format tar %s | gzip > /tmp/%s' % (release_tree, release_archive))
+      release_tree = local('git show-ref --tags -s "%s"' % tag, True)
+      local('git archive --format tar %s | gzip > %s/%s' % (release_tree, env.local_tmp, release_archive))
 
 def upload_release(site, tag):
   print green("===> Uploading the release archive...")
   release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
   with settings(warn_only=True):
-    if run("test -f /tmp/%s" % release_archive).failed:
-      put('/tmp/%s' % release_archive, '/tmp/')
-    else:
-      abort(red("Release archive doesn't exist, please run build_release again"))
+    if run("test -f %s/%s" % (env.remote_tmp, release_archive)).failed:
+      put('%s/%s' % (env.local_tmp, release_archive), '/tmp/')
 
 def extract_release(site, tag):
   print green("===> Extracting the release...")
@@ -77,14 +78,15 @@ def extract_release(site, tag):
   env.tag = tag
   release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
   with settings(warn_only=True):
-    if run("test -f /tmp/%s" % release_archive).failed:
+    if run("test -f %s/%s" % (env.remote_tmp, release_archive)).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
     if run('test -d /var/www/%(apptype)s/%(site)s/releases/%(tag)s' % env).succeeded:
       abort(red("Release directory already exists"))
   if run('test -d /var/www/%(apptype)s/%(site)s/releases' % env).succeeded:
     with cd('/var/www/%s/%s/releases' % (env.apptype, site)):
       run('mkdir -p /var/www/%s/%s/releases/%s' % (env.apptype, site, tag))
-      run('tar -zxf /tmp/%s -C /var/www/%s/%s/releases/%s' % (release_archive, env.apptype, site, tag))
+      flags = 'zxf'
+      run('tar -%s %s/%s -C /var/www/%s/%s/releases/%s' % (flags, env.remote_tmp, release_archive, env.apptype, site, tag))
 
 def create_release_files_symlink(site, tag):
   run('ln -nfs /var/lib/sitedata/%s/%s/files /var/www/%s/%s/releases/%s/sites/default/files' % (env.apptype, site, env.apptype, site, tag))
