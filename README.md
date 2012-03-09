@@ -1,13 +1,13 @@
 Conventions / Assumptions:
 
 * user/group deploy exist and have correct ssh/key setup
-* /var/lib/sitedata/<apptype> exists
-* /var/lib/sitedata/<apptype>/<sitename> exists
-* /var/lib/sitedata/<apptype>/<sitename>/files exists and is writable by deploy
-* /var/lib/sitedata/<apptype>/<sitename>/settings.php exists
-* /var/www/<apptype> exists
-* /var/www/<apptype>/<sitename> exists and is writable by deploy
-* /var/www/<apptype>/<sitename>/releases exists and is writable by deploy
+* /var/lib/sitedata/%lt;apptype&gt; exists
+* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt; exists
+* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt;/files exists and is writable by deploy
+* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt;/settings.php exists
+* /var/www/&lt;apptype&gt; exists
+* /var/www/&lt;apptype&gt;/&lt;sitename&gt; exists and is writable by deploy
+* /var/www/&lt;apptype&gt;/&lt;sitename&gt;/releases exists and is writable by deploy
 * Git tags do NOT contain slashes
 
 Getting started:
@@ -24,7 +24,7 @@ Copy exampleconfig.py to siteconfig.py in a handy location.
 
 Update siteconfig.py as required.
 
-Copy examplerc to '<environment>rc' and update as required.
+Copy examplerc to '&lt;environment&rt;rc' and update as required.
 
 Alias fabric call, add to your ~/.bashrc:
 
