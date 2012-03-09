@@ -18,6 +18,7 @@ TODO:
 * Logging
 * Look at yyuus fabric_deploy (yyuu.fabric_deploy)
 * Add more verbose output, eg. zxvf vs zxf
+* Parallel execution - capture output, display once where required, eg. puppet runs
 
 Recipe future possibilities:
 
