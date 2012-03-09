@@ -120,10 +120,12 @@ def extract_release(site, tag):
 
 @task
 def create_release_files_symlink(site, tag):
+  print green("===> Symlink shared files to current release...")
   run('ln -nfs /var/lib/sitedata/%s/%s/files /var/www/%s/%s/releases/%s/sites/default/files' % (env.apptype, site, env.apptype, site, tag))
 
 @task
 def create_release_settings_symlink(site, tag):
+  print green("===> Symlink settings.php to current release...")
   run('ln -nfs /var/www/%s/%s/settings.php /var/www/%s/%s/releases/%s/sites/default/settings.php' % (env.apptype, site, env.apptype, site, tag))
 
 @task
