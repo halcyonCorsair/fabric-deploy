@@ -186,6 +186,9 @@ def drush_backup_database(site, tag):
 @task
 @runs_once
 def drush_site_offline(site, tag, version=7):
+  """
+  Put drupal in maintenance mode
+  """
   print green("===> Set site offline...")
   if (env.version == 7):
     run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 1" % (env.apptype, site))
@@ -195,6 +198,9 @@ def drush_site_offline(site, tag, version=7):
 @task
 @runs_once
 def drush_site_online(site, tag, version=7):
+  """
+  Take drupal out of maintenance mode
+  """
   print green("===> Set site online...")
   if (env.version == 7):
     run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 0" % (env.apptype, site))
@@ -204,6 +210,9 @@ def drush_site_online(site, tag, version=7):
 @task
 @runs_once
 def drush_feature_revert(site, tag, prompt=True):
+  """
+  Revert drupal feature via drush
+  """
   print green("===> Reverting site features...")
   if (prompt == True):
     """
