@@ -1,10 +1,10 @@
 Conventions / Assumptions:
 
 * user/group deploy exist and have correct ssh/key setup
-* /var/lib/sitedata/%lt;apptype&gt; exists
-* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt; exists
-* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt;/files exists and is writable by deploy
-* /var/lib/sitedata/%lt;apptype&gt;/&lt;sitename&gt;/settings.php exists
+* /var/lib/sitedata/&lt;apptype&gt; exists
+* /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt; exists
+* /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt;/files exists and is writable by deploy
+* /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt;/settings.php exists
 * /var/www/&lt;apptype&gt; exists
 * /var/www/&lt;apptype&gt;/&lt;sitename&gt; exists and is writable by deploy
 * /var/www/&lt;apptype&gt;/&lt;sitename&gt;/releases exists and is writable by deploy
@@ -24,12 +24,12 @@ Copy exampleconfig.py to siteconfig.py in a handy location.
 
 Update siteconfig.py as required.
 
-Copy examplerc to '&lt;environment&rt;rc' and update as required.
+Copy examplerc to &lt;environment&gt;rc and update as required.
 
 Alias fabric call, add to your ~/.bashrc:
 
 ```bash
-alias deploy="fab -f /path/to/deploy.py"
+  alias deploy="fab -f /path/to/deploy.py"
 ```
 
 Example usage:
