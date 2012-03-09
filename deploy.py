@@ -169,25 +169,25 @@ def drush_backup_database(site, tag):
 @runs_once
 def drush_site_offline(site, tag, version=7):
   print green("===> Set site offline...")
-  if (version == 7):
+  if (env.version == 7):
     run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 1" % (env.apptype, site))
-  elif (version == 6):
+  elif (env.version == 6):
     run("drush -r /var/www/%s/%s/current -y vset site_offline 1" % (env.apptype, site))
 
 @task
 @runs_once
 def drush_site_online(site, tag, version=7):
   print green("===> Set site online...")
-  if (version == 7):
+  if (env.version == 7):
     run("drush -r /var/www/%s/%s/current -y vset maintenance_mode 0" % (env.apptype, site))
-  elif (version == 6):
+  elif (env.version == 6):
     run("drush -r /var/www/%s/%s/current -y vset site_offline 1" % (env.apptype, site))
 
 @task
 @runs_once
 def drush_feature_revert(site, tag, prompt=True):
   print green("===> Reverting site features...")
-  if (prompt):
+  if (prompt == True):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """
@@ -198,7 +198,7 @@ def drush_feature_revert(site, tag, prompt=True):
 
 def drush_update_database(site, prompt=True):
   print green("===> Running database updates...")
-  if (prompt):
+  if (prompt == True):
     run("drush -r /var/www/%s/%s/current updb" % (env.apptype, site))
   else:
     run("drush -r /var/www/%s/%s/current -y updb" % (env.apptype, site))
@@ -209,7 +209,7 @@ def drush_cache_clear_all(site):
 
 def mkdir(dir, use_sudo=False):
     # Create a directory if it doesn't exist
-    if (use_sudo):
+    if (use_sudo == True):
       run('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
     else:
       sudo('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
