@@ -196,14 +196,18 @@ def drush_feature_revert(site, tag, prompt=True):
   else:
     run("drush -r /var/www/%s/%s/current -y fra" % (env.apptype, site))
 
-def drush_update_database(site, prompt=True):
+@task
+@runs_once
+def drush_update_database(site, tag, prompt=True):
   print green("===> Running database updates...")
   if (prompt == True):
     run("drush -r /var/www/%s/%s/current updb" % (env.apptype, site))
   else:
     run("drush -r /var/www/%s/%s/current -y updb" % (env.apptype, site))
 
-def drush_cache_clear_all(site):
+@task
+@runs_once
+def drush_cache_clear_all(site, tag):
   print green("===> Running drush cc all...")
   run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
