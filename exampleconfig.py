@@ -29,9 +29,16 @@ if (env.stage == 'dev'):
     'drush_site_online',
   ]
 
+  # this:
   env.hosts = [
     'user@host.domain'
   ]
+  # or:
+  env.user = 'deploy'
+  env.roledefs = {
+      'web': ['33.33.33.21', '33.33.33.22'],
+      #'db': ['33.33.33.10'],
+  }
 else:
   abort('stage not setup in site recipe')
 
