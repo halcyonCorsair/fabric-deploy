@@ -50,3 +50,15 @@ Example usage:
   deploy -c devrc load_config build_release:'mytag-20120307-1'
 ```
 
+  Get information about the available commands:
+
+```bash
+  deploy -l
+```
+
+  Get information about a command:
+
+```bash
+  deploy -d load_config
+```
+
