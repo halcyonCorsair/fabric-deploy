@@ -239,9 +239,10 @@ def drush_cache_clear_all(site, tag):
   run("drush -r /var/www/%s/%s/current cc all" % (env.apptype, site))
 
 def mkdir(dir, use_sudo=False):
+    command = 'if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir)
     # Create a directory if it doesn't exist
     if (use_sudo == True):
-      run('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
+      run(command)
     else:
-      sudo('if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir))
+      sudo(command)
 
