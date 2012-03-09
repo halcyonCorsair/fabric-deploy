@@ -1,5 +1,7 @@
 TODO:
 
+* Git checkout bare?
+* Add more comments/documentation
 * Put release_archive in env
 * -y for updb? prompt?
 * Add notes, re: pre-requisites (eg. deployment directory structure)
@@ -15,8 +17,12 @@ TODO:
 * Import more selectively
 * Logging
 * Look at yyuus fabric_deploy (yyuu.fabric_deploy)
+* Add more verbose output, eg. zxvf vs zxf
 
 Recipe future possibilities:
 
 * Turn into xml / validate against xsd, show what variables / overrides are available, etc
 * Store in database - manage via admin app, eg. elearning
+
+BUGS:
+
