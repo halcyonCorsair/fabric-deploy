@@ -162,7 +162,6 @@ def rollback_symlink(site, tag):
 @runs_once
 def drush_backup_database(site, tag):
   print green("===> Quick and dirty database backup...")
-  import time
   backup_time = time.strftime('%Y.%m.%d-%H.%M')
   run('drush -r /var/www/%s/%s/current sql-dump --result-file=~/%s_%s_%s.sql --gzip' % (env.apptype, site, site, env.stage, backup_time))
 
