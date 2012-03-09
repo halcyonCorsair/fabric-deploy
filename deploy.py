@@ -77,6 +77,7 @@ def tag_release(site, tag, commit, message=''):
   return tag
 
 @task
+@runs_once
 def build_release(site, tag):
   print green("===> Building the release...")
   release_archive = '%s-site-%s_%s.tar.gz' % (env.apptype, site, tag)
