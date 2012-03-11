@@ -95,8 +95,7 @@ def build_release(site, tag):
       local('git archive --format tar %s | gzip > %s/%s' % (release_tree, env.local_tmp, release_archive))
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def upload_release(site, tag):
   print green("===> Uploading the release archive...")
@@ -106,8 +105,7 @@ def upload_release(site, tag):
       put('%s/%s' % (env.local_tmp, release_archive), '/tmp/')
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def extract_release(site, tag):
   print green("===> Extracting the release...")
@@ -126,24 +124,21 @@ def extract_release(site, tag):
       run('tar -%s %s/%s -C /var/www/%s/%s/releases/%s' % (flags, env.remote_tmp, release_archive, env.apptype, site, tag))
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def create_release_files_symlink(site, tag):
   print green("===> Symlink shared files to current release...")
   run('ln -nfs /var/lib/sitedata/%s/%s/files /var/www/%s/%s/releases/%s/sites/default/files' % (env.apptype, site, env.apptype, site, tag))
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def create_release_settings_symlink(site, tag):
   print green("===> Symlink settings.php to current release...")
   run('ln -nfs /var/www/%s/%s/settings.php /var/www/%s/%s/releases/%s/sites/default/settings.php' % (env.apptype, site, env.apptype, site, tag))
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def symlink_current_release(site, tag):
   print green("===> Symlinking current release...")
@@ -165,8 +160,7 @@ def symlink_current_release(site, tag):
         run('ln -fns %s %s' % (new_previous, previous_site_symlink))
 
 @task
-#@parallel
-@serial
+@parallel
 @roles('web')
 def rollback_symlink(site, tag):
   print green("===> Settings current release symlink to the value of previous symlink...")
