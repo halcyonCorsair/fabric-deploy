@@ -62,3 +62,8 @@ Example usage:
   deploy -d load_config
 ```
 
+  To show debugging information (see fabric&#39;s documentation on output levels):
+
+```bash
+  deploy --show=debug
+```
