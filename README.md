@@ -38,7 +38,7 @@ Example usage:
   deploy -c devrc deploy:'mytag-20120307-1'
 ```
 
-  Deploy to an arbitrary server (as long as env.hosts isn't getting overridden):
+  Deploy to an arbitrary server (as long as env.hosts isn&#39;t getting overridden):
 
 ```bash
   deploy -c devrc -H user@hostname.com deploy:'mytag-20120307-1'
