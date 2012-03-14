@@ -1,44 +1,50 @@
 from fabric.api import env, task
 from fabric.utils import abort
 
+"""Possible overrides
+env.user = 'deploy'
+env.shell = '/bin/bash -c'
+env.web_root = '/var/www'
+env.release_archive = None
+env.release_time = time.strftime('%Y.%m.%d-%H.%M')
+env.local_tmp = '/tmp'
+env.remote_tmp = '/tmp'
+
+Possible tasks:
+env.deploy_tasks = [
+  'build_release',
+  'upload_release',
+  'extract_release',
+  'symlink_current_release',
+  'create_release_files_symlink',
+  'create_release_settings_symlink',
+  'drush_backup_database',
+  'drush_site_offline',
+  'drush_update_database',
+  'drush_feature_revert',
+  'drush_cache_clear_all',
+  'drush_site_online',
+]
+
+See http://docs.python.org/tutorial/datastructures.html for list methods (eg, remove, insert, etc).
+"""
+
 env.site    = 'example'
 env.repository = 'git+ssh://git.hosting.com/drupal/example.git'
 env.apptype = 'drupal'
+env.remote_tmp = '/tmp'
 env.local_tmp = '/tmp'
 env.version = 7
 
-"""Assume stage set via rcfile, eg:
-stage=dev
-"""
 if (env.stage == 'dev'):
-  env.pre_deploy_tasks = []
+  #env.deploy_tasks.remove('drush_feature_revert')
 
-  env.deploy_tasks = [
-    'build_release',
-    'upload_release',
-    'extract_release',
-  ]
-
-  env.post_deploy_tasks = [
-    'drush_backup_database',
-    'drush_site_offline',
-    'drush_update_database',
-    'drush_feature_revert',
-    'drush_cache_clear_all',
-    'drush_site_online',
-  ]
-
-  # this:
-  env.hosts = [
-    'user@host.domain'
-  ]
-  # or:
-  env.user = 'deploy'
-  env.roledefs = {
-      'web': ['33.33.33.21', '33.33.33.22'],
-      #'db': ['33.33.33.10'],
-  }
+  #env.user = 'deployuser'
+  #env.roledefs = {
+  #    'web': ['web1.server.net', 'web2.server.net'],
+  #    'db': ['db.server.net'],
+  #    'files': ['files.server.net'],
+  #}
 else:
   abort('stage not setup in site recipe')
 
-'''
