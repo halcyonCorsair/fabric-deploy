@@ -2,7 +2,7 @@ from fabric.api import *
 from fabric.colors import green, red, yellow
 import os, sys, time
 
-env.user = 'autodeploy'
+env.user = 'deploy'
 env.shell = '/bin/bash -c'
 env.web_root = '/var/www'
 env.release_time = time.strftime('%Y.%m.%d-%H.%M')
