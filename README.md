@@ -24,8 +24,6 @@ Copy exampleconfig.py to siteconfig.py in a handy location.
 
 Update siteconfig.py as required.
 
-Copy examplerc to &lt;environment&gt;rc and update as required.
-
 Alias fabric call, add to your ~/.bashrc:
 
 ```bash
@@ -35,19 +33,19 @@ Alias fabric call, add to your ~/.bashrc:
 Example usage:
 
 ```bash
-  deploy -c devrc deploy:'mytag-20120307-1'
+  deploy --set stage=dev deploy:'mytag-20120307-1'
 ```
 
   Deploy to an arbitrary server (as long as env.hosts isn&#39;t getting overridden):
 
 ```bash
-  deploy -c devrc -H user@hostname.com deploy:'mytag-20120307-1'
+  deploy --set stage=dev -H user@hostname.com deploy:'mytag-20120307-1'
 ```
 
   To run an arbitrary command you must first load config:
 
 ```bash
-  deploy -c devrc load_config build_release:'mytag-20120307-1'
+  deploy --set stage=dev load_config build_release:'mytag-20120307-1'
 ```
 
   Get information about the available commands:

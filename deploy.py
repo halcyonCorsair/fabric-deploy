@@ -9,9 +9,6 @@ env.release_time = time.strftime('%Y.%m.%d-%H.%M')
 env.local_tmp = '/tmp'
 env.remote_tmp = '/tmp'
 
-env.pre_deploy_tasks = [
-]
-
 env.deploy_tasks = [
   'build_release',
   'upload_release',
@@ -19,9 +16,6 @@ env.deploy_tasks = [
   'symlink_current_release',
   'create_release_files_symlink',
   'create_release_settings_symlink',
-]
-
-env.post_deploy_tasks = [
   'drush_backup_database',
   'drush_site_offline',
   'drush_update_database',
