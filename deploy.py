@@ -52,6 +52,12 @@ def load_config():
   import siteconfig
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
 
+def set_sitetag(site=None, tag=None):
+  if (not site is None):
+    env.site = site
+  if (not tag is None):
+    env.tag = tag
+
 @task
 def tag_release(site, tag, commit, message=''):
   print green("===> Building the release...")
@@ -73,7 +79,9 @@ def tag_release(site, tag, commit, message=''):
 
 @task
 @runs_once
-def build_release(site, tag):
+def build_release(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Building the release...")
   release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
@@ -92,7 +100,9 @@ def build_release(site, tag):
 @task
 @serial
 @roles('web')
-def upload_release(site, tag):
+def upload_release(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Uploading the release archive...")
   release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   with settings(warn_only=True):
@@ -102,7 +112,9 @@ def upload_release(site, tag):
 @task
 @serial
 @roles('web')
-def extract_release(site, tag):
+def extract_release(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Extracting the release...")
   env.site = site
   env.tag = tag
@@ -121,32 +133,37 @@ def extract_release(site, tag):
 @task
 @serial
 @roles('web')
-def create_release_files_symlink(site, tag):
+def create_release_files_symlink(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Symlink shared files to current release...")
   run('ln -nfs /var/lib/sitedata/%(apptype)s/%(site)s/files /var/www/%(apptype)s/%(site)s/releases/%(tag)s/sites/default/files' % env)
 
 @task
 @serial
 @roles('web')
-def create_release_settings_symlink(site, tag):
+def create_release_settings_symlink(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Symlink settings.php to current release...")
   run('ln -nfs /var/www/%(apptype)s/%(site)s/settings.php /var/www/%(apptype)s/%(site)s/releases/%(tag)s/sites/default/settings.php' % env)
 
 @task
 @serial
 @roles('web')
-def symlink_current_release(site, tag):
+def symlink_current_release(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Symlinking current release...")
   env.site_symlink = '/var/www/%(apptype)s/%(site)s/current' % env
   env.previous_site_symlink = '/var/www/%(apptype)s/%(site)s/previous' % env
   env.new_previous = ''
   with settings(warn_only=True):
     env.new_previous = run('readlink %(site_symlink)s' % env)
+
   env.new_current = '/var/www/%(apptype)s/%(site)s/releases/%(tag)s' % env
 
-  """
-  If targets are different, set target of current -> previous, and new release -> current
-  """
+  # If targets are different, set target of current -> previous, and new release -> current
   if (new_previous != new_current):
     if run("test -d %(new_current)s" % env).succeeded:
       run('ln -fns %(new_current)s %(site_symlink)s' % env)
@@ -157,7 +174,9 @@ def symlink_current_release(site, tag):
 @task
 @serial
 @roles('web')
-def rollback_symlink(site, tag):
+def rollback_symlink(site=None, tag=None):
+  set_sitetag(site, tag)
+
   print green("===> Settings current release symlink to the value of previous symlink...")
   env.site_symlink = '/var/www/%(apptype)s/%(site)s/current' % env
   env.previous_site_symlink = '/var/www/%(apptype)s/%(site)s/previous' % env
@@ -167,20 +186,24 @@ def rollback_symlink(site, tag):
 
 @task
 @runs_once
-def drush_backup_database(site, tag):
+def drush_backup_database(site=None, tag=None):
   """
   Backup database to deploy user's home directory with drush
   """
+  set_sitetag(site, tag)
+
   print green("===> Quick and dirty database backup...")
   backup_time = time.strftime('%Y.%m.%d-%H.%M')
   run('drush -r /var/www/%(apptype)s/%(site)s/current sql-dump --result-file=~/%(site)s_%(stage)s_%(backup_time)s.sql --gzip' % env)
 
 @task
 @runs_once
-def drush_site_offline(site, tag, version=7):
+def drush_site_offline(site=None, tag=None, version=7):
   """
   Put drupal in maintenance mode
   """
+  set_sitetag(site, tag)
+
   print green("===> Set site offline...")
   if (env.version == 7):
     run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 1" % env)
@@ -189,10 +212,12 @@ def drush_site_offline(site, tag, version=7):
 
 @task
 @runs_once
-def drush_site_online(site, tag, version=7):
+def drush_site_online(site=None, tag=None, version=7):
   """
   Take drupal out of maintenance mode
   """
+  set_sitetag(site, tag)
+
   print green("===> Set site online...")
   if (env.version == 7):
     run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 0" % env)
@@ -201,10 +226,12 @@ def drush_site_online(site, tag, version=7):
 
 @task
 @runs_once
-def drush_feature_revert(site, tag, prompt=True):
+def drush_feature_revert(site=None, tag=None, prompt=True):
   """
   Revert drupal feature via drush
   """
+  set_sitetag(site, tag)
+
   print green("===> Reverting site features...")
   if (prompt == True):
     """
@@ -217,10 +244,12 @@ def drush_feature_revert(site, tag, prompt=True):
 
 @task
 @runs_once
-def drush_update_database(site, tag, prompt=True):
+def drush_update_database(site=None, tag=None, prompt=True):
   """
-  Run drupal database updates
+  Run drupal database updates via: drush updb
   """
+  set_sitetag(site, tag)
+
   print green("===> Running database updates...")
   command = 'drush -r /var/www/%(apptype)s/%(site)s/current updb' % env
   if (prompt != True):
@@ -229,7 +258,12 @@ def drush_update_database(site, tag, prompt=True):
 
 @task
 @runs_once
-def drush_cache_clear_all(site, tag):
+def drush_cache_clear_all(site=None, tag=None):
+  """
+  Run drupal cache clear via: drush cc all
+  """
+  set_sitetag(site, tag)
+
   print green("===> Running drush cc all...")
   run("drush -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
 
