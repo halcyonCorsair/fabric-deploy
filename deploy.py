@@ -268,12 +268,12 @@ def drush_cache_clear_all(site=None, tag=None):
   run("drush -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
 
 def mkdir(dir, use_sudo=False):
-    """
-    Helper function to create directories
-    """
-    command = 'if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir)
-    if (use_sudo == True):
-      run(command)
-    else:
-      sudo(command)
+  """
+  Helper function to create directories
+  """
+  command = 'if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir)
+  if (use_sudo == True):
+    run(command)
+  else:
+    sudo(command)
 
