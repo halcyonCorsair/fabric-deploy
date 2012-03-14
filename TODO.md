@@ -4,6 +4,13 @@ TODO:
 * Write puppet modules
 * Rollback
 * Add more comments/documentation
+** Change exampleconfig to use ReSTructured text with the first string as a comment, per discussion with Tom
+
+* Check, re: drush status return codes
+* Check, re: enabled modules before running drush fr for example
+
+* Turn site and tag into kwargs?
+* Add checkargs or getargs type function
 
 * Test parallel execution
 * healthchecks, load balancers?
