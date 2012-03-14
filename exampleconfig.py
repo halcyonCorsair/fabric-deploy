@@ -4,13 +4,12 @@ from fabric.utils import abort
 env.site    = 'example'
 env.repository = 'git+ssh://git.hosting.com/drupal/example.git'
 env.apptype = 'drupal'
-env.local_tmp = '~/tmp'
+env.local_tmp = '/tmp'
 env.version = 7
 
 """Assume stage set via rcfile, eg:
 stage=dev
 """
-'''
 if (env.stage == 'dev'):
   env.pre_deploy_tasks = []
 
