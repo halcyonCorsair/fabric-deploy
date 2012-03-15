@@ -28,18 +28,16 @@ env.deploy_tasks = [
 @task
 def deploy(tag):
   load_config()
+  set_sitetag(env.site, tag)
 
-  for task in env.pre_deploy_tasks:
-    execute(task, env.site, tag)
+  print(green("=> Beginning deploy"))
+  print(yellow(env.deploy_tasks))
 
   for task in env.deploy_tasks:
-    execute(task, env.site, tag)
-
-  for task in env.post_deploy_tasks:
     if ('feature_revert' in task or 'update_database' in task):
-      execute(task, env.site, tag, prompt=False)
+      execute(task, prompt=False)
     else:
-      execute(task, env.site, tag)
+      execute(task)
 
 @task
 def load_config():
@@ -83,7 +81,7 @@ def build_release(site=None, tag=None):
   set_sitetag(site, tag)
 
   print green("===> Building the release...")
-  release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
+  env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
 
   # Ensure code directory exists
@@ -104,7 +102,7 @@ def upload_release(site=None, tag=None):
   set_sitetag(site, tag)
 
   print green("===> Uploading the release archive...")
-  release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
+  env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   with settings(warn_only=True):
     if run("test -f %(remote_tmp)s/%(release_archive)s" % env).failed:
       put('%(local_tmp)s/%(release_archive)s' % env, '/tmp/')
@@ -116,9 +114,7 @@ def extract_release(site=None, tag=None):
   set_sitetag(site, tag)
 
   print green("===> Extracting the release...")
-  env.site = site
-  env.tag = tag
-  release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
+  env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   with settings(warn_only=True):
     if run("test -f %(remote_tmp)s/%(release_archive)s" % env).failed:
       abort(red("Release archive doesn't exist, please run build_release again"))
@@ -164,7 +160,7 @@ def symlink_current_release(site=None, tag=None):
   env.new_current = '/var/www/%(apptype)s/%(site)s/releases/%(tag)s' % env
 
   # If targets are different, set target of current -> previous, and new release -> current
-  if (new_previous != new_current):
+  if (env.new_previous != env.new_current):
     if run("test -d %(new_current)s" % env).succeeded:
       run('ln -fns %(new_current)s %(site_symlink)s' % env)
     with settings(warn_only=True):
@@ -193,7 +189,7 @@ def drush_backup_database(site=None, tag=None):
   set_sitetag(site, tag)
 
   print green("===> Quick and dirty database backup...")
-  backup_time = time.strftime('%Y.%m.%d-%H.%M')
+  env.backup_time = time.strftime('%Y.%m.%d-%H.%M')
   run('drush -r /var/www/%(apptype)s/%(site)s/current sql-dump --result-file=~/%(site)s_%(stage)s_%(backup_time)s.sql --gzip' % env)
 
 @task
@@ -254,7 +250,7 @@ def drush_update_database(site=None, tag=None, prompt=True):
   command = 'drush -r /var/www/%(apptype)s/%(site)s/current updb' % env
   if (prompt != True):
     command += ' -y'
-  run(command))
+  run(command)
 
 @task
 @runs_once
