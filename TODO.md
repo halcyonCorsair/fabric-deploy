@@ -1,7 +1,8 @@
 TODO:
 
 * Write documentation around overall process: cfgmgr -> puppet, then deploy
-* Write puppet modules
+* Add db and files backup functions
+* Add drush run as user
 * Rollback
 * Add more comments/documentation
 ** Change exampleconfig to use ReSTructured text with the first string as a comment, per discussion with Tom
