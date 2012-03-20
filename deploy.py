@@ -269,7 +269,7 @@ def mkdir(dir, use_sudo=False):
   """
   command = 'if [ ! -d %s ]; then mkdir -p %s; fi;' % (dir, dir)
   if (use_sudo == True):
-    run(command)
-  else:
     sudo(command)
+  else:
+    run(command)
 
