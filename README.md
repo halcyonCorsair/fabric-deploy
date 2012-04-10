@@ -4,9 +4,9 @@ Conventions / Assumptions:
 * /var/lib/sitedata/&lt;apptype&gt; exists
 * /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt; exists
 * /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt;/files exists and is writable by deploy
-* /var/lib/sitedata/&lt;apptype&gt;/&lt;sitename&gt;/settings.php exists
 * /var/www/&lt;apptype&gt; exists
 * /var/www/&lt;apptype&gt;/&lt;sitename&gt; exists and is writable by deploy
+* /var/www/&lt;apptype&gt;/&lt;sitename&gt;/settings.php exists
 * /var/www/&lt;apptype&gt;/&lt;sitename&gt;/releases exists and is writable by deploy
 * Git tags do NOT contain slashes
 
