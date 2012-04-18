@@ -28,6 +28,7 @@ env.deploy_tasks = [
 @task
 def deploy(tag):
   load_config()
+  env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
   set_sitetag(env.site, tag)
 
   print(green("=> Beginning deploy"))
@@ -48,7 +49,6 @@ def load_config():
   directory = os.getcwd()
   sys.path.append(directory)
   import siteconfig
-  env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
 
 def set_sitetag(site=None, tag=None):
   if (not site is None):
