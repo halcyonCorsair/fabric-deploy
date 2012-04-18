@@ -1,6 +1,7 @@
 TODO:
 
 * Unsymlink settings.php from old releases to prevent execution of old code
+* Git checkout bare?
 * Write documentation around overall process: cfgmgr -> puppet, then deploy
 * Add db and files backup functions
 * Add drush run as user
@@ -10,10 +11,7 @@ TODO:
 * Check, re: drush status return codes
 * Check, re: enabled modules before running drush fr for example
 * Write some tests
-* Add checkargs or getargs type function
-* Test parallel execution
 * healthchecks, load balancers?
-* Git checkout bare?
 * Hiding/show relevant output
 * Log in parallel with console
 * After loading, print config?
