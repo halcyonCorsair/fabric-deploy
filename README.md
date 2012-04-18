@@ -36,6 +36,12 @@ Example usage:
   deploy --set stage=dev deploy:'mytag-20120307-1'
 ```
 
+  Explicitly specify the directory containing your siteconfig recipe:
+
+```bash
+  deploy --set stage=dev,siteconfig_dir=/path/to/your/siteconfig deploy:'mytag-20120307-1'
+```
+
   Deploy to an arbitrary server (as long as env.hosts isn&#39;t getting overridden):
 
 ```bash

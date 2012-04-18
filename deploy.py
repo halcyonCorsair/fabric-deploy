@@ -27,6 +27,9 @@ env.deploy_tasks = [
 
 @task
 def deploy(tag):
+  """Deploy your site
+  Calls load_config(), then proceeds to run through the defined deployment tasks.
+  """
   load_config()
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
   set_sitetag(env.site, tag)
@@ -44,9 +47,18 @@ def deploy(tag):
 def load_config():
   """Load site config.
   Assume config file is called siteconfig.py and resides in the current directory.
+  Can be overridden by setting the siteconfig_dir env variable, eg.: --set siteconfig_dir=/path/to/your/siteconfig
   """
   print green("===> Loading site recipe...")
-  directory = os.getcwd()
+  try:
+    env.siteconfig_dir
+  except AttributeError:
+    env.siteconfig_dir = None
+
+  if (env.siteconfig_dir == None):
+    directory = os.getcwd()
+  else:
+    directory = env.siteconfig_dir
   sys.path.append(directory)
   import siteconfig
 
