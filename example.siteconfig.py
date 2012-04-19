@@ -19,6 +19,7 @@ To see the default deployment tasks, run:
 See http://docs.python.org/tutorial/datastructures.html for list methods (eg, remove, insert, etc).
 """
 
+# <Sitename> Overrides:
 env.site    = 'example'
 env.repository = 'git+ssh://git.hosting.com/drupal/example.git'
 env.apptype = 'drupal'
@@ -27,14 +28,22 @@ env.local_tmp = '/tmp'
 env.version = 7
 
 if (env.stage == 'dev'):
+  # A little dirty, but may desirable until convenience method exists?
+  # Uncomment if you want features automatically reverted on deploy
+  #fr_index = env.deploy_tasks.index('drush_cache_clear_all')
+  #env.deploy_tasks.append('drush_feature_revert')
   #env.deploy_tasks.remove('drush_feature_revert')
 
-  #env.user = 'deployuser'
+  """
+  Server uri's should be specified as fqdn
+  """
   #env.roledefs = {
   #    'web': ['web1.server.net', 'web2.server.net'],
   #    'db': ['db.server.net'],
   #    'files': ['files.server.net'],
   #}
+elif (env.stage == 'staging'):
+  pass
 else:
   abort('stage not setup in site recipe')
 
