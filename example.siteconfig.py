@@ -10,21 +10,11 @@ env.release_time = time.strftime('%Y.%m.%d-%H.%M')
 env.local_tmp = '/tmp'
 env.remote_tmp = '/tmp'
 
-Default tasks:
-env.deploy_tasks = [
-  'build_release',
-  'upload_release',
-  'extract_release',
-  'create_release_files_symlink',
-  'create_release_settings_symlink',
-  'drush_site_offline',
-  'drush_backup_database',
-  'symlink_current_release',
-  'drush_update_database',
-  #'drush_feature_revert',
-  'drush_cache_clear_all',
-  'drush_site_online',
-]
+To see all available tasks, run:
+  fab -f /path/to/deploy.py -l
+
+To see the default deployment tasks, run:
+  fab -f /path/to/deploy.py list_deploy_tasks
 
 See http://docs.python.org/tutorial/datastructures.html for list methods (eg, remove, insert, etc).
 """
