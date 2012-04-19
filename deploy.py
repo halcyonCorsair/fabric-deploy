@@ -207,6 +207,7 @@ def rollback_symlink(site=None, tag=None):
 
 @task
 @runs_once
+@roles('web')
 def drush_backup_database(site=None, tag=None):
   """
   Backup database to deploy user's home directory with drush
@@ -219,6 +220,7 @@ def drush_backup_database(site=None, tag=None):
 
 @task
 @runs_once
+@roles('web')
 def drush_site_offline(site=None, tag=None, version=7):
   """
   Put drupal in maintenance mode
@@ -233,6 +235,7 @@ def drush_site_offline(site=None, tag=None, version=7):
 
 @task
 @runs_once
+@roles('web')
 def drush_site_online(site=None, tag=None, version=7):
   """
   Take drupal out of maintenance mode
@@ -247,6 +250,7 @@ def drush_site_online(site=None, tag=None, version=7):
 
 @task
 @runs_once
+@roles('web')
 def drush_feature_revert(site=None, tag=None, prompt=True):
   """
   Revert drupal feature via drush
@@ -279,6 +283,7 @@ def drush_update_database(site=None, tag=None, prompt=True):
 
 @task
 @runs_once
+@roles('web')
 def drush_cache_clear_all(site=None, tag=None):
   """
   Run drupal cache clear via: drush cc all
