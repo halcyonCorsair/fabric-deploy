@@ -93,6 +93,8 @@ def build_release(tag=None, site=None):
   """Build your release tarball
   Keyword arguments: tag, site
   Standalone Usage: load_config build_release:tag='mytag'
+  Required environment variables: apptype, local_tmp, repository, tag, site
+  - tag, site can be set during build_release call
   """
   set_sitetag(site, tag)
 
