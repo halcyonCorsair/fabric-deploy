@@ -2,7 +2,7 @@ from fabric.api import env, task
 from fabric.utils import abort
 
 """Possible overrides
-env.user = 'deploy'
+env.user = 'drupaldeploy'
 env.shell = '/bin/bash -c'
 env.web_root = '/var/www'
 env.release_archive = None
