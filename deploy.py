@@ -89,7 +89,11 @@ def tag_release(site, tag, commit, message=''):
 
 @task
 @runs_once
-def build_release(site=None, tag=None):
+def build_release(tag=None, site=None):
+  """Build your release tarball
+  Keyword arguments: tag, site
+  Standalone Usage: load_config build_release:tag='mytag'
+  """
   set_sitetag(site, tag)
 
   print green("===> Building the release...")
