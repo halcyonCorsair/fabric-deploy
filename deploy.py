@@ -269,6 +269,59 @@ def drush_feature_revert(site=None, tag=None, prompt=True):
 
 @task
 @runs_once
+@roles('web')
+def drush_cron(site=None, tag=None, prompt=True):
+  """
+  Use drush to enable cron
+  """
+  set_sitetag(site, tag)
+
+  print green("===> Enabling drupal module...")
+  run("drush -r /var/www/%(apptype)s/%(site)s/current cron" % env)
+
+@task
+@runs_once
+@roles('web')
+def drush_enable_module(drupal_module, site=None, tag=None, prompt=True):
+  """
+  Enable drupal module via drush
+  """
+  set_sitetag(site, tag)
+
+  env.drupal_module = drupal_module
+
+  print green("===> Enabling drupal module...")
+  if (prompt == True):
+    """
+    Show list of changed features, and then have drush ask whether to continue.
+    """
+    run("drush -r /var/www/%(apptype)s/%(site)s/current en %(drupal_module)s" % env)
+  else:
+    run("drush -r /var/www/%(apptype)s/%(site)s/current -y en %(drupal_module)s" % env)
+
+@task
+@runs_once
+@roles('web')
+def drush_disable_module(drupal_module, site=None, tag=None, prompt=True):
+  """
+  Enable drupal module via drush
+  """
+  set_sitetag(site, tag)
+
+  env.drupal_module = drupal_module
+
+  print green("===> Enabling drupal module...")
+  if (prompt == True):
+    """
+    Show list of changed features, and then have drush ask whether to continue.
+    """
+    run("drush -r /var/www/%(apptype)s/%(site)s/current dis %(drupal_module)s" % env)
+  else:
+    run("drush -r /var/www/%(apptype)s/%(site)s/current -y dis %(drupal_module)s" % env)
+
+@task
+@runs_once
+@roles('web')
 def drush_update_database(site=None, tag=None, prompt=True):
   """
   Run drupal database updates via: drush updb
