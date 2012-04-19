@@ -26,6 +26,13 @@ env.deploy_tasks = [
 ]
 
 @task
+def list_deploy_tasks():
+  """List your deployment tasks
+  Run load_config task first to see what tasks your site would run
+  """
+  print "\n".join(env.deploy_tasks)
+
+@task
 def deploy(tag):
   """Deploy your site
   Calls load_config(), then proceeds to run through the defined deployment tasks.

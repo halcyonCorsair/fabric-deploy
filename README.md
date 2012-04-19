@@ -33,26 +33,38 @@ Alias fabric call, add to your ~/.bashrc:
 Example usage:
 
 ```bash
-  --set stage=dev deploy:'mytag-20120307-1'
+  deploy --set stage=dev deploy:'mytag-20120307-1'
 ```
 
   Explicitly specify the directory containing your siteconfig recipe:
 
 ```bash
-  --set stage=dev,siteconfig_dir=/path/to/your/siteconfig deploy:'mytag-20120307-1'
+  deploy --set stage=dev,siteconfig_dir=/path/to/your/siteconfig deploy:'mytag-20120307-1'
 ```
 
   Deploy to an arbitrary server (as long as env.hosts isn&#39;t getting overridden):
 
 ```bash
-  --set stage=dev -H user@hostname.com deploy:'mytag-20120307-1'
+  deploy --set stage=dev -H user@hostname.com deploy:'mytag-20120307-1'
 ```
 
   To run an arbitrary command you must first load config:
 
 ```bash
-  --set stage=dev load_config build_release:'mytag-20120307-1'
-  --set stage=dev load_config build_release:tag='mytag-20120307-1',site='sitename'
+  deploy --set stage=dev load_config build_release:'mytag-20120307-1'
+  deploy --set stage=dev load_config build_release:tag='mytag-20120307-1',site='sitename'
+```
+
+  To list the default deployment tasks:
+
+```bash
+  deploy list_deploy_tasks
+```
+
+  To list the deployment tasks for your site:
+
+```bash
+  deploy --set stage=dev load_config list_deploy_tasks
 ```
 
   Get information about the available commands:
