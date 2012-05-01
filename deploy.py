@@ -251,21 +251,76 @@ def drush_site_online(site=None, tag=None, version=7):
 @task
 @runs_once
 @roles('web')
-def drush_feature_revert(site=None, tag=None, prompt=True):
+def drush_features(site=None):
   """
-  Revert drupal feature via drush
+  List the available site features, and their state
   """
   set_sitetag(site, tag)
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current features" % env)
 
-  print green("===> Reverting site features...")
-  if (prompt == True):
+@task
+@runs_once
+@roles('web')
+def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
+  """Revert drupal feature via drush
+  Keyword arguments: feature, site, prompt, force
+  - feature: None; If set, revert that feature.  Otherwise, loop through env.revertable_features (if it exists)
+  - prompt: True; Set to false to use -y for drush
+  - force: False; See drush help feature-revert
+  """
+  set_sitetag(site)
+
+  env.force_revert = ''
+  if (force == True or force == 'True'):
+    env.force_revert = '--force'
+
+  env.prompt_string = '-y'
+  if (prompt == False or prompt == 'False'):
+    env.prompt_string = ''
+
+  print green("===> Reverting site feature(s)...")
+  if (not feature == None):
+    env.drupal_feature = feature
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert)s %(drupal_feature)s" % env)
+  else:
+    try:
+      env.revertable_features
+    except AttributeError:
+      env.revertable_features = None
+
+    if (not env.revertable_features == None):
+      for feature in env.revertable_features:
+        env.drupal_feature = feature
+        run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert)s %(drupal_feature)s" % env)
+    else:
+      print(yellow('[warning]: ') + 'Nothing to revert, no argument, and env.revertable_features was empty.')
+
+@task
+@runs_once
+@roles('web')
+def drush_feature_revert_all(site=None, prompt=True, force=False):
+  """
+  Revert ALL drupal feature via drush
+  """
+  # TODO: Add the ability to exclude features (per: drush help fra)
+  set_sitetag(site)
+
+  env.force_revert = ''
+  if (force == True or force == 'True'):
+    env.force_revert = '--force'
+
+  env.prompt_string = '-y'
+  if (prompt == False or prompt == 'False'):
+    env.prompt_string = ''
+
+  print green("===> Reverting site feature(s)...")
+  if (prompt == True or prompt == 'True'):
     """
-    Show list of changed features, and then have drush ask whether to continue.
+    Show list of changed features prior to revert
     """
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current features" % env)
-    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current fra" % env)
-  else:
-    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y fra" % env)
+
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fra %(force_revert)s" % env)
 
 @task
 @runs_once
@@ -291,7 +346,7 @@ def drush_enable_module(drupal_module, site=None, tag=None, prompt=True):
   env.drupal_module = drupal_module
 
   print green("===> Enabling drupal module...")
-  if (prompt == True):
+  if (prompt == True or prompt == 'True'):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """
@@ -311,7 +366,7 @@ def drush_disable_module(drupal_module, site=None, tag=None, prompt=True):
   env.drupal_module = drupal_module
 
   print green("===> Enabling drupal module...")
-  if (prompt == True):
+  if (prompt == True or prompt == 'True'):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """

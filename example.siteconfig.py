@@ -17,6 +17,18 @@ To see the default deployment tasks, run:
   fab -f /path/to/deploy.py list_deploy_tasks
 
 See http://docs.python.org/tutorial/datastructures.html for list methods (eg, remove, insert, etc).
+
+# Reverting Features #:
+
+You can revert individual features by creating a list (env.revertable_features), and then adding drush_feature_revert to your list of tasks. eg.
+
+env.revertable_features = [
+  'feature_one',
+  'feature_two',
+]
+env.deploy_tasks.insert(position, 'drush_cron')
+
+
 """
 
 # <Sitename> Overrides:
