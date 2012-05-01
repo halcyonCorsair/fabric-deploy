@@ -216,7 +216,7 @@ def drush_backup_database(site=None, tag=None):
 
   print green("===> Quick and dirty database backup...")
   env.backup_time = time.strftime('%Y.%m.%d-%H.%M')
-  run('drush -r /var/www/%(apptype)s/%(site)s/current sql-dump --result-file=~/%(site)s_%(stage)s_%(backup_time)s.sql --gzip' % env)
+  run('drush -u 1 -r /var/www/%(apptype)s/%(site)s/current sql-dump --result-file=~/%(site)s_%(stage)s_%(backup_time)s.sql --gzip' % env)
 
 @task
 @runs_once
@@ -229,9 +229,9 @@ def drush_site_offline(site=None, tag=None, version=7):
 
   print green("===> Set site offline...")
   if (env.version == 7):
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 1" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 1" % env)
   elif (env.version == 6):
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset site_offline 1" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset site_offline 1" % env)
 
 @task
 @runs_once
@@ -244,9 +244,9 @@ def drush_site_online(site=None, tag=None, version=7):
 
   print green("===> Set site online...")
   if (env.version == 7):
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 0" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 0" % env)
   elif (env.version == 6):
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y vset site_offline 1" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset site_offline 1" % env)
 
 @task
 @runs_once
@@ -262,10 +262,10 @@ def drush_feature_revert(site=None, tag=None, prompt=True):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """
-    run("drush -r /var/www/%(apptype)s/%(site)s/current features" % env)
-    run("drush -r /var/www/%(apptype)s/%(site)s/current fra" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current features" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current fra" % env)
   else:
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y fra" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y fra" % env)
 
 @task
 @runs_once
@@ -277,7 +277,7 @@ def drush_cron(site=None, tag=None, prompt=True):
   set_sitetag(site, tag)
 
   print green("===> Enabling drupal module...")
-  run("drush -r /var/www/%(apptype)s/%(site)s/current cron" % env)
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cron" % env)
 
 @task
 @runs_once
@@ -295,9 +295,9 @@ def drush_enable_module(drupal_module, site=None, tag=None, prompt=True):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """
-    run("drush -r /var/www/%(apptype)s/%(site)s/current en %(drupal_module)s" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current en %(drupal_module)s" % env)
   else:
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y en %(drupal_module)s" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y en %(drupal_module)s" % env)
 
 @task
 @runs_once
@@ -315,9 +315,9 @@ def drush_disable_module(drupal_module, site=None, tag=None, prompt=True):
     """
     Show list of changed features, and then have drush ask whether to continue.
     """
-    run("drush -r /var/www/%(apptype)s/%(site)s/current dis %(drupal_module)s" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current dis %(drupal_module)s" % env)
   else:
-    run("drush -r /var/www/%(apptype)s/%(site)s/current -y dis %(drupal_module)s" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y dis %(drupal_module)s" % env)
 
 @task
 @runs_once
@@ -329,7 +329,7 @@ def drush_update_database(site=None, tag=None, prompt=True):
   set_sitetag(site, tag)
 
   print green("===> Running database updates...")
-  command = 'drush -r /var/www/%(apptype)s/%(site)s/current updb' % env
+  command = 'drush -u 1 -r /var/www/%(apptype)s/%(site)s/current updb' % env
   if (prompt != True):
     command += ' -y'
   run(command)
@@ -343,8 +343,8 @@ def drush_cache_clear_all(site=None, tag=None):
   """
   set_sitetag(site, tag)
 
-  print green("===> Running drush cc all...")
-  run("drush -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
+  print green("===> Running drush cache clear all...")
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
 
 def mkdir(dir, use_sudo=False):
   """
