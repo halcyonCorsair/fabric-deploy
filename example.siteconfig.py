@@ -28,20 +28,26 @@ env.local_tmp = '/tmp'
 env.version = 7
 
 if (env.stage == 'dev'):
-  # A little dirty, but may desirable until convenience method exists?
-  # Uncomment if you want features automatically reverted on deploy
-  #fr_index = env.deploy_tasks.index('drush_cache_clear_all')
-  #env.deploy_tasks.append('drush_feature_revert')
-  #env.deploy_tasks.remove('drush_feature_revert')
+  # Append a task
+  env.deploy_tasks.append('drush_feature_revert_all')
+
+  # Remove a task
+  env.deploy_tasks.remove('drush_cache_clear_all')
+
+  # Insert a task
+  #   Unfortunately you need to know the position in the list, so...
+  #   eg. Insert drush_cron before drush_site_online:
+  position = env.deploy_tasks.index('drush_site_online')
+  env.deploy_tasks.insert(position, 'drush_cron')
 
   """
   Server uri's should be specified as fqdn
   """
-  #env.roledefs = {
-  #    'web': ['web1.server.net', 'web2.server.net'],
+  env.roledefs = {
+      'web': ['web1.server.net', 'web2.server.net'],
   #    'db': ['db.server.net'],
   #    'files': ['files.server.net'],
-  #}
+  }
 elif (env.stage == 'staging'):
   pass
 else:
