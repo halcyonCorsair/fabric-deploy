@@ -30,7 +30,7 @@ def list_deploy_tasks():
   """List your deployment tasks
   Run load_config task first to see what tasks your site would run
   """
-  print "\n".join(env.deploy_tasks)
+  print yellow("\n".join(env.deploy_tasks))
 
 @task
 def deploy(tag):
@@ -42,7 +42,7 @@ def deploy(tag):
   set_sitetag(env.site, tag)
 
   print(green("=> Beginning deploy"))
-  print(yellow(env.deploy_tasks))
+  list_deploy_tasks()
 
   for task in env.deploy_tasks:
     if ('feature_revert' in task or 'update_database' in task):
