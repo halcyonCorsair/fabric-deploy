@@ -276,7 +276,7 @@ def drush_cron(site=None, tag=None, prompt=True):
   """
   set_sitetag(site, tag)
 
-  print green("===> Enabling drupal module...")
+  print green("===> Running cron via drush...")
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cron" % env)
 
 @task
