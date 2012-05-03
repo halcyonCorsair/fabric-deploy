@@ -27,8 +27,6 @@ env.revertable_features = [
   'feature_two',
 ]
 env.deploy_tasks.insert(position, 'drush_cron')
-
-
 """
 
 # <Sitename> Overrides:
@@ -56,9 +54,9 @@ if (env.stage == 'dev'):
   Server uri's should be specified as fqdn
   """
   env.roledefs = {
-      'web': ['web1.server.net', 'web2.server.net'],
-  #    'db': ['db.server.net'],
-  #    'files': ['files.server.net'],
+    'web': ['web1.server.net', 'web2.server.net'],
+    'db': ['db.server.net'],
+    'files': ['files.server.net'],
   }
 elif (env.stage == 'staging'):
   pass
