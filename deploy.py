@@ -274,9 +274,9 @@ def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
   if (force == True or force == 'True'):
     env.force_revert_string = '--force'
 
-  env.prompt_string = '-y'
+  env.prompt_string = ''
   if (prompt == False or prompt == 'False'):
-    env.prompt_string = ''
+    env.prompt_string = '-y'
 
   print green("===> Reverting site feature(s)...")
   if (not feature == None):
@@ -309,9 +309,9 @@ def drush_feature_revert_all(site=None, prompt=True, force=False):
   if (force == True or force == 'True'):
     env.force_revert_string = '--force'
 
-  env.prompt_string = '-y'
+  env.prompt_string = ''
   if (prompt == False or prompt == 'False'):
-    env.prompt_string = ''
+    env.prompt_string = '-y'
 
   print green("===> Reverting site feature(s)...")
   if (prompt == True or prompt == 'True'):
