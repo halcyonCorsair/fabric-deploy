@@ -270,18 +270,18 @@ def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
   """
   set_sitetag(site)
 
-  env.force_revert = ''
+  env.force_revert_string = ''
   if (force == True or force == 'True'):
-    env.force_revert = '--force'
+    env.force_revert_string = '--force'
 
-  env.prompt_string = '-y'
+  env.prompt_string = ''
   if (prompt == False or prompt == 'False'):
-    env.prompt_string = ''
+    env.prompt_string = '-y'
 
   print green("===> Reverting site feature(s)...")
   if (not feature == None):
     env.drupal_feature = feature
-    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert)s %(drupal_feature)s" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert_string)s %(drupal_feature)s" % env)
   else:
     try:
       env.revertable_features
@@ -291,7 +291,7 @@ def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
     if (not env.revertable_features == None):
       for feature in env.revertable_features:
         env.drupal_feature = feature
-        run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert)s %(drupal_feature)s" % env)
+        run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert_string)s %(drupal_feature)s" % env)
     else:
       print(yellow('[warning]: ') + 'Nothing to revert, no argument, and env.revertable_features was empty.')
 
@@ -305,13 +305,13 @@ def drush_feature_revert_all(site=None, prompt=True, force=False):
   # TODO: Add the ability to exclude features (per: drush help fra)
   set_sitetag(site)
 
-  env.force_revert = ''
+  env.force_revert_string = ''
   if (force == True or force == 'True'):
-    env.force_revert = '--force'
+    env.force_revert_string = '--force'
 
-  env.prompt_string = '-y'
+  env.prompt_string = ''
   if (prompt == False or prompt == 'False'):
-    env.prompt_string = ''
+    env.prompt_string = '-y'
 
   print green("===> Reverting site feature(s)...")
   if (prompt == True or prompt == 'True'):
@@ -320,7 +320,7 @@ def drush_feature_revert_all(site=None, prompt=True, force=False):
     """
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current features" % env)
 
-  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fra %(force_revert)s" % env)
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fra %(force_revert_string)s" % env)
 
 @task
 @runs_once
