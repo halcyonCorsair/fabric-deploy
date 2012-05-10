@@ -261,6 +261,20 @@ def drush_features(site=None):
 @task
 @runs_once
 @roles('web')
+def drush_feature_diff(feature, site=None):
+  """Show drupal feature differences
+  Keyword arguments: feature, site, prompt, force
+  - feature: The feature to check (required)
+  """
+  set_sitetag(site)
+
+  print green("===> Running feature-diff...")
+  env.drupal_feature = feature
+  run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current fd %(drupal_feature)s" % env)
+
+@task
+@runs_once
+@roles('web')
 def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
   """Revert drupal feature via drush
   Keyword arguments: feature, site, prompt, force
