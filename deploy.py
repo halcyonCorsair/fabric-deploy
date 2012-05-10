@@ -255,7 +255,7 @@ def drush_features(site=None):
   """
   List the available site features, and their state
   """
-  set_sitetag(site, tag)
+  set_sitetag(site)
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current features" % env)
 
 @task
