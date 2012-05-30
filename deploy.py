@@ -246,7 +246,7 @@ def drush_site_online(site=None, tag=None, version=7):
   if (env.version == 7):
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 0" % env)
   elif (env.version == 6):
-    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset site_offline 1" % env)
+    run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vdel site_offline" % env)
 
 @task
 @runs_once
