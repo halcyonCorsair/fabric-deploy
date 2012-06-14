@@ -25,19 +25,6 @@ env.deploy_tasks = [
   'drush_site_online',
 ]
 
-if (env.app == 'piwik'):
-  env.deploy_taks = [
-    'build_release',
-    'upload_release',
-    'extract_release',
-    'piwik_create_release_config_symlink',
-    'piwik_create_release_tmp_symlink',
-    'piwik_site_offline',
-    'symlink_current_release',
-    'piwik_run_updates',
-    'piwik_site_online',
-  ]
-
 @task
 def list_deploy_tasks():
   """List your deployment tasks
@@ -50,6 +37,20 @@ def deploy(tag):
   """Deploy your site
   Calls load_config(), then proceeds to run through the defined deployment tasks.
   """
+
+  if (env.apptype == 'piwik'):
+    env.deploy_taks = [
+      'build_release',
+      'upload_release',
+      'extract_release',
+      'piwik_create_release_config_symlink',
+      'piwik_create_release_tmp_symlink',
+      'piwik_site_offline',
+      'symlink_current_release',
+      'piwik_run_updates',
+      'piwik_site_online',
+    ]
+
   load_config()
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
   set_sitetag(env.site, tag)
