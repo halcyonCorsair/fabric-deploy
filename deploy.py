@@ -1,6 +1,6 @@
 from fabric.api import *
 from fabric.colors import green, red, yellow
-from fabric.contrib.files import comment, contains, sed, uncomment
+from fabric.contrib.files import append, comment, contains, sed, uncomment
 import os, sys, time
 
 env.user = 'drupaldeploy'
