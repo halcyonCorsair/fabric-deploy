@@ -460,8 +460,12 @@ def piwik_run_updates(site=None, tag=None, prompt=True):
   command = 'php /var/www/%(apptype)s/%(site)s/current/index.php -- "module=CoreUpdater"' % env
   run(command)
 
-## disable piwik tracking and user interface
+@task
+@runs_once
+@roles('web')
 def piwik_site_offline():
+  ''' Disable piwik tracking and user interface
+  '''
   config_file = env.site_symlink + '/config/config.ini.php'
 
   # Turn on maintenance mode
@@ -480,8 +484,12 @@ def piwik_site_offline():
   else:
     uncomment(config_file, 'record_statistics = 0', char=';')
 
-## enable piwik tracking and user interface
+@task
+@runs_once
+@roles('web')
 def piwik_site_online():
+  ''' Enable piwik tracking and user interface
+  '''
   config_file = env.site_symlink + '/config/config.ini.php'
   # Turn off maintenance mode; [General] section
   comment(config_file, 'maintenance_mode = 1', char=';')
