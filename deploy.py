@@ -25,6 +25,19 @@ env.deploy_tasks = [
   'drush_site_online',
 ]
 
+if (env.app == 'piwik'):
+  env.deploy_taks = [
+    'build_release',
+    'upload_release',
+    'extract_release',
+    'piwik_create_release_config_symlink',
+    'piwik_create_release_tmp_symlink',
+    'piwik_site_offline',
+    'symlink_current_release',
+    'piwik_run_updates',
+    'piwik_site_online',
+  ]
+
 @task
 def list_deploy_tasks():
   """List your deployment tasks
@@ -168,6 +181,24 @@ def create_release_settings_symlink(site=None, tag=None):
 
   print green("===> Symlink settings.php to current release...")
   run('ln -nfs /var/www/%(apptype)s/%(site)s/settings.php /var/www/%(apptype)s/%(site)s/releases/%(tag)s/sites/default/settings.php' % env)
+
+@task
+@serial
+@roles('web')
+def piwik_create_release_config_symlink(site=None, tag=None):
+  set_sitetag(site, tag)
+
+  print green("===> Symlink shared files to current release...")
+  run('ln -nfs /var/lib/sitedata/%(apptype)s/%(site)s/config /var/www/%(apptype)s/%(site)s/releases/%(tag)s/config' % env)
+
+@task
+@serial
+@roles('web')
+def piwik_create_release_tmp_symlink(site=None, tag=None):
+  set_sitetag(site, tag)
+
+  print green("===> Symlink settings.php to current release...")
+  run('ln -nfs /var/lib/sitedata/%(apptype)s/%(site)s/tmp /var/www/%(apptype)s/%(site)s/releases/%(tag)s/tmp' % env)
 
 @task
 @serial
@@ -414,6 +445,48 @@ def drush_cache_clear_all(site=None, tag=None):
 
   print green("===> Running drush cache clear all...")
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
+
+@task
+@runs_once
+@roles('web')
+def piwik_run_updates(site=None, tag=None, prompt=True):
+  """
+  Run piwik updates via
+  """
+  set_sitetag(site, tag)
+
+  print green("===> Running piwik updates...")
+  command = 'php /var/www/%(apptype)s/%(site)s/current/index.php -- "module=CoreUpdater"' % env
+  run(command)
+
+## disable piwik tracking and user interface
+def piwik_site_offline():
+  config_file = env.site_symlink + '/config/config.ini.php'
+
+  # Turn on maintenance mode
+  if (not contains(config_file, '\[General\]')):
+    append(config_file, '[General]\nmaintenance_mode = 1')
+  elif (not contains(config_file, 'maintenance_mode = 1')):
+    sed(config_file, '\[General\]', '[General]\\nmaintenance_mode = 1')
+  else:
+    uncomment(config_file, 'maintenance_mode = 1', char=';')
+
+  # Stop recording statistics
+  if (not contains(config_file, '\[Tracker\]')):
+    append(config_file, '[Tracker]\nrecord_statistics = 0')
+  elif (not contains(config_file, 'record_statistics = 0')):
+    sed(config_file, '\[Tracker\]', '[Tracker]\\nrecord_statistics = 0')
+  else:
+    uncomment(config_file, 'record_statistics = 0', char=';')
+
+## enable piwik tracking and user interface
+def piwik_site_online():
+  config_file = env.site_symlink + '/config/config.ini.php'
+  # Turn off maintenance mode; [General] section
+  comment(config_file, 'maintenance_mode = 1', char=';')
+  # Restart recording statistics; [Tracker] section
+  comment(config_file, 'record_statistics = 0', char=';')
+
 
 def mkdir(dir, use_sudo=False):
   """
