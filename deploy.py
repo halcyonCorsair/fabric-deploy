@@ -466,7 +466,7 @@ def piwik_run_updates(site=None, tag=None, prompt=True):
 def piwik_site_offline():
   ''' Disable piwik tracking and user interface
   '''
-  config_file = env.site_symlink + '/config/config.ini.php'
+  config_file = '/var/www/%(apptype)s/%(site)s/current/config.ini.php' % env
 
   # Turn on maintenance mode
   if (not contains(config_file, '\[General\]')):
@@ -490,7 +490,8 @@ def piwik_site_offline():
 def piwik_site_online():
   ''' Enable piwik tracking and user interface
   '''
-  config_file = env.site_symlink + '/config/config.ini.php'
+  config_file = '/var/www/%(apptype)s/%(site)s/current/config.ini.php' % env
+
   # Turn off maintenance mode; [General] section
   comment(config_file, 'maintenance_mode = 1', char=';')
   # Restart recording statistics; [Tracker] section
