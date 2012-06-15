@@ -467,23 +467,43 @@ def piwik_run_updates(site=None, tag=None, prompt=True):
 def piwik_site_offline():
   ''' Disable piwik tracking and user interface
   '''
-  config_file = '/var/www/%(apptype)s/%(site)s/current/config.ini.php' % env
+  config_file = '/var/www/%(apptype)s/%(site)s/current/config/config.ini.php' % env
+  patterns = {
+    'maintenance_mode': '[[:space:]]*maintenance_mode[[:space:]]*=[[:space:]]*',
+    'record_statistics': '[[:space:]]*record_statistics[[:space:]]*=[[:space:]]*',
+  }
 
   # Turn on maintenance mode
-  if (not contains(config_file, '\[General\]')):
+  if (not contains(config_file, '[General]', exact=True)):
     append(config_file, '[General]\nmaintenance_mode = 1')
-  elif (not contains(config_file, 'maintenance_mode = 1')):
-    sed(config_file, '\[General\]', '[General]\\nmaintenance_mode = 1')
+    if (not contains(config_file, '[General]', exact=True)):
+      abort(red('Unable to put site into maintenance mode'))
+
   else:
-    uncomment(config_file, 'maintenance_mode = 1', char=';')
+    if (contains(config_file, '^%(maintenance_mode)s0' % patterns, escape=False)):
+      comment(config_file, '^%(maintenance_mode)s0' % patterns, char=';')
+
+    if (contains(config_file, '^[[:space:]]*;{1}%(maintenance_mode)s1' % patterns, escape=False)):
+      uncomment(config_file, '^[[:space:]]*;{1}%(maintenance_mode)s1' % patterns, char=';')
+    else:
+      if (not contains(config_file, '^%(maintenance_mode)s1' % patterns, escape=False)):
+        sed(config_file, '\[General\]', '[General]\\nmaintenance_mode = 1')
 
   # Stop recording statistics
-  if (not contains(config_file, '\[Tracker\]')):
+  if (not contains(config_file, '[Tracker]', exact=True)):
     append(config_file, '[Tracker]\nrecord_statistics = 0')
-  elif (not contains(config_file, 'record_statistics = 0')):
-    sed(config_file, '\[Tracker\]', '[Tracker]\\nrecord_statistics = 0')
+    if (not contains(config_file, '[Tracker]', exact=True)):
+      abort(red('Unable to put site into maintenance mode'))
+
   else:
-    uncomment(config_file, 'record_statistics = 0', char=';')
+    if (contains(config_file, '^%(record_statistics)s1' % patterns, escape=False)):
+      comment(config_file, '^%(record_statistics)s1' % patterns, char=';')
+
+    if (contains(config_file, '^[[:space:]]*;{1}%(record_statistics)s0' % patterns, escape=False)):
+      uncomment(config_file, '^[[:space:]]*;{1}%(record_statistics)s0' % patterns, char=';')
+    else:
+      if (not contains(config_file, '^%(record_statistics)s0' % patterns, escape=False)):
+        sed(config_file, '\[Tracker\]', '[Tracker]\\nrecord_statistics = 0')
 
 @task
 @runs_once
@@ -491,13 +511,19 @@ def piwik_site_offline():
 def piwik_site_online():
   ''' Enable piwik tracking and user interface
   '''
-  config_file = '/var/www/%(apptype)s/%(site)s/current/config.ini.php' % env
+  config_file = '/var/www/%(apptype)s/%(site)s/current/config/config.ini.php' % env
+  patterns = {
+    'maintenance_mode': '[[:space:]]*maintenance_mode[[:space:]]*=[[:space:]]*',
+    'record_statistics': '[[:space:]]*record_statistics[[:space:]]*=[[:space:]]*',
+  }
 
-  # Turn off maintenance mode; [General] section
-  comment(config_file, 'maintenance_mode = 1', char=';')
-  # Restart recording statistics; [Tracker] section
-  comment(config_file, 'record_statistics = 0', char=';')
+  # Turn off maintenance mode
+  if (contains(config_file, '^%(maintenance_mode)s1' % patterns, escape=False)):
+    comment(config_file, '^%(maintenance_mode)s1' % patterns, char=';')
 
+  # Resume recording statistics
+  if (contains(config_file, '^%(record_statistics)s0' % patterns, escape=False)):
+    comment(config_file, '^%(record_statistics)s0' % patterns, char=';')
 
 def mkdir(dir, use_sudo=False):
   """
