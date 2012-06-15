@@ -542,7 +542,7 @@ def run_or_sudo(*args, **kwargs):
   """run command as 'env.sudouser' if defined and env.usesudo
   
   Passes all arguments on to run() or sudo() except 'user'."""
-  if env.usesudo = False or sudouser not in env:
+  if env.usesudo == False or sudouser not in env:
     run(*args, **kwargs)
   else:
     ## obviously this clobbers any passed-in 'user' arg
