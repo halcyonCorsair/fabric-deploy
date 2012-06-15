@@ -40,8 +40,10 @@ def deploy(tag):
   Calls load_config(), then proceeds to run through the defined deployment tasks.
   """
 
+  load_config()
+
   if (env.apptype == 'piwik'):
-    env.deploy_taks = [
+    env.deploy_tasks = [
       'build_release',
       'upload_release',
       'extract_release',
@@ -53,7 +55,6 @@ def deploy(tag):
       'piwik_site_online',
     ]
 
-  load_config()
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
   set_sitetag(env.site, tag)
 
