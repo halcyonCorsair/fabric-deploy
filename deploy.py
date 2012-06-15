@@ -4,6 +4,7 @@ from fabric.contrib.files import append, comment, contains, sed, uncomment
 import os, sys, time
 
 env.user = 'drupaldeploy'
+env.sudouser = None
 env.shell = '/bin/bash -c'
 env.web_root = '/var/www'
 env.release_archive = None
@@ -31,7 +32,7 @@ def list_deploy_tasks():
   """List your deployment tasks
   Run load_config task first to see what tasks your site would run
   """
-  print yellow("\n".join(env.deploy_tasks))
+  print(yellow("\n".join(env.deploy_tasks)))
 
 @task
 def deploy(tag):
@@ -71,7 +72,7 @@ def load_config():
   Assume config file is called siteconfig.py and resides in the current directory.
   Can be overridden by setting the siteconfig_dir env variable, eg.: --set siteconfig_dir=/path/to/your/siteconfig
   """
-  print green("===> Loading site recipe...")
+  print(green("===> Loading site recipe..."))
   try:
     env.siteconfig_dir
   except AttributeError:
@@ -92,7 +93,7 @@ def set_sitetag(site=None, tag=None):
 
 @task
 def tag_release(site, tag, commit, message=''):
-  print green("===> Building the release...")
+  print(green("===> Building the release..."))
   tag = 'site-%(release_time)s-' % env
 
   # Ensure code directory exists
@@ -120,7 +121,7 @@ def build_release(tag=None, site=None):
   """
   set_sitetag(site, tag)
 
-  print green("===> Building the release...")
+  print(green("===> Building the release..."))
   env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   env.scm_build_dir = '%(local_tmp)s/%(apptype)s-site-%(site)s' % env
 
@@ -141,7 +142,7 @@ def build_release(tag=None, site=None):
 def upload_release(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Uploading the release archive...")
+  print(green("===> Uploading the release archive..."))
   env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   with settings(warn_only=True):
     if run("test -f %(remote_tmp)s/%(release_archive)s" % env).failed:
@@ -153,7 +154,7 @@ def upload_release(site=None, tag=None):
 def extract_release(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Extracting the release...")
+  print(green("===> Extracting the release..."))
   env.release_archive = '%(apptype)s-site-%(site)s_%(tag)s.tar.gz' % env
   with settings(warn_only=True):
     if run("test -f %(remote_tmp)s/%(release_archive)s" % env).failed:
@@ -172,7 +173,7 @@ def extract_release(site=None, tag=None):
 def create_release_files_symlink(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Symlink shared files to current release...")
+  print(green("===> Symlink shared files to current release..."))
   run('ln -nfs /var/lib/sitedata/%(apptype)s/%(site)s/files /var/www/%(apptype)s/%(site)s/releases/%(tag)s/sites/default/files' % env)
 
 @task
@@ -181,7 +182,7 @@ def create_release_files_symlink(site=None, tag=None):
 def create_release_settings_symlink(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Symlink settings.php to current release...")
+  print(green("===> Symlink settings.php to current release..."))
   run('ln -nfs /var/www/%(apptype)s/%(site)s/settings.php /var/www/%(apptype)s/%(site)s/releases/%(tag)s/sites/default/settings.php' % env)
 
 @task
@@ -208,7 +209,7 @@ def piwik_create_release_tmp_symlink(site=None, tag=None):
 def symlink_current_release(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Symlinking current release...")
+  print(green("===> Symlinking current release..."))
   env.site_symlink = '/var/www/%(apptype)s/%(site)s/current' % env
   env.previous_site_symlink = '/var/www/%(apptype)s/%(site)s/previous' % env
   env.new_previous = ''
@@ -231,7 +232,7 @@ def symlink_current_release(site=None, tag=None):
 def rollback_symlink(site=None, tag=None):
   set_sitetag(site, tag)
 
-  print green("===> Settings current release symlink to the value of previous symlink...")
+  print(green("===> Settings current release symlink to the value of previous symlink..."))
   env.site_symlink = '/var/www/%(apptype)s/%(site)s/current' % env
   env.previous_site_symlink = '/var/www/%(apptype)s/%(site)s/previous' % env
   env.previous = run('readlink %(previous_site_symlink)s' % env)
@@ -247,7 +248,7 @@ def drush_backup_database(site=None, tag=None):
   """
   set_sitetag(site, tag)
 
-  print green("===> Quick and dirty database backup...")
+  print(green("===> Quick and dirty database backup..."))
   env.backup_time = time.strftime('%Y.%m.%d-%H.%M')
   run('drush -u 1 -r /var/www/%(apptype)s/%(site)s/current sql-dump --result-file=~/%(site)s_%(stage)s_%(backup_time)s.sql --gzip' % env)
 
@@ -260,7 +261,7 @@ def drush_site_offline(site=None, tag=None, version=7):
   """
   set_sitetag(site, tag)
 
-  print green("===> Set site offline...")
+  print(green("===> Set site offline..."))
   if (env.version == 7):
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 1" % env)
   elif (env.version == 6):
@@ -275,7 +276,7 @@ def drush_site_online(site=None, tag=None, version=7):
   """
   set_sitetag(site, tag)
 
-  print green("===> Set site online...")
+  print(green("===> Set site online..."))
   if (env.version == 7):
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current -y vset maintenance_mode 0" % env)
   elif (env.version == 6):
@@ -301,7 +302,7 @@ def drush_feature_diff(feature, site=None):
   """
   set_sitetag(site)
 
-  print green("===> Running feature-diff...")
+  print(green("===> Running feature-diff..."))
   env.drupal_feature = feature
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current fd %(drupal_feature)s" % env)
 
@@ -325,7 +326,7 @@ def drush_feature_revert(feature=None, site=None, prompt=True, force=False):
   if (prompt == False or prompt == 'False'):
     env.prompt_string = '-y'
 
-  print green("===> Reverting site feature(s)...")
+  print(green("===> Reverting site feature(s)..."))
   if (not feature == None):
     env.drupal_feature = feature
     run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current %(prompt_string)s fr %(force_revert_string)s %(drupal_feature)s" % env)
@@ -360,7 +361,7 @@ def drush_feature_revert_all(site=None, prompt=True, force=False):
   if (prompt == False or prompt == 'False'):
     env.prompt_string = '-y'
 
-  print green("===> Reverting site feature(s)...")
+  print(green("===> Reverting site feature(s)..."))
   if (prompt == True or prompt == 'True'):
     """
     Show list of changed features prior to revert
@@ -378,7 +379,7 @@ def drush_cron(site=None, tag=None, prompt=True):
   """
   set_sitetag(site, tag)
 
-  print green("===> Running cron via drush...")
+  print(green("===> Running cron via drush..."))
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cron" % env)
 
 @task
@@ -392,7 +393,7 @@ def drush_enable_module(drupal_module, site=None, tag=None, prompt=True):
 
   env.drupal_module = drupal_module
 
-  print green("===> Enabling drupal module...")
+  print(green("===> Enabling drupal module..."))
   if (prompt == True or prompt == 'True'):
     """
     Show list of changed features, and then have drush ask whether to continue.
@@ -412,7 +413,7 @@ def drush_disable_module(drupal_module, site=None, tag=None, prompt=True):
 
   env.drupal_module = drupal_module
 
-  print green("===> Enabling drupal module...")
+  print(green("===> Enabling drupal module..."))
   if (prompt == True or prompt == 'True'):
     """
     Show list of changed features, and then have drush ask whether to continue.
@@ -430,7 +431,7 @@ def drush_update_database(site=None, tag=None, prompt=True):
   """
   set_sitetag(site, tag)
 
-  print green("===> Running database updates...")
+  print(green("===> Running database updates..."))
   command = 'drush -u 1 -r /var/www/%(apptype)s/%(site)s/current updb' % env
   if (prompt != True):
     command += ' -y'
@@ -445,7 +446,7 @@ def drush_cache_clear_all(site=None, tag=None):
   """
   set_sitetag(site, tag)
 
-  print green("===> Running drush cache clear all...")
+  print(green("===> Running drush cache clear all..."))
   run("drush -u 1 -r /var/www/%(apptype)s/%(site)s/current cc all" % env)
 
 @task
@@ -534,4 +535,17 @@ def mkdir(dir, use_sudo=False):
     sudo(command)
   else:
     run(command)
+
+# fabric sudo doc: http://docs.fabfile.org/en/1.4.2/api/core/operations.html#fabric.operations.sudo
+# env.sudouser == the dude who you want to sudo as
+def run_or_sudo(*args, **kwargs):
+  """run command as 'env.sudouser' if defined and env.usesudo
+  
+  Passes all arguments on to run() or sudo() except 'user'."""
+  if env.usesudo = False or sudouser not in env:
+    run(*args, **kwargs)
+  else:
+    ## obviously this clobbers any passed-in 'user' arg
+    kwargs['user'] = env.sudouser
+    sudo(*args, **kwargs)
 
